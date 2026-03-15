@@ -1,36 +1,27 @@
-import type { Metadata, Viewport } from "next";
+"use client";
+
 import { Inter } from "next/font/google";
+import { usePathname } from "next/navigation";
 import "./globals.css";
+import BottomNav from "@/components/BottomNav";
 
 const inter = Inter({
   subsets: ["latin"],
   display: 'swap',
 });
 
-export const metadata: Metadata = {
-  title: "2026 수학여행 안내",
-  description: "학생 및 교사용 수학여행 통합 안내 웹앱",
-};
-
-export const viewport: Viewport = {
-  themeColor: "#4f46e5",
-  width: "device-width",
-  initialScale: 1,
-  maximumScale: 1,
-  userScalable: false, // Prevent zoom on mobile for better app feel
-};
-
-import BottomNav from "@/components/BottomNav";
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const pathname = usePathname();
+  const isTeacherPage = pathname?.startsWith('/teacher');
+
   return (
     <html lang="ko">
       <body className={inter.className}>
-        <div className="app-container">
+        <div className={`app-container ${isTeacherPage ? 'wide-container' : ''}`}>
           {children}
           <BottomNav />
         </div>

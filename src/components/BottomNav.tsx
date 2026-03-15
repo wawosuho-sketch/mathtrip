@@ -32,7 +32,7 @@ export default function BottomNav() {
       left: '50%',
       transform: 'translateX(-50%)',
       width: '100%',
-      maxWidth: '480px',
+      maxWidth: 'var(--app-max-width)',
       backgroundColor: 'var(--card-bg)',
       borderTop: '1px solid var(--border-color)',
       display: 'flex',
