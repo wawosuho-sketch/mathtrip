@@ -10,9 +10,13 @@ export default function SplashPage() {
   useEffect(() => {
     setMounted(true);
     const timer = setTimeout(() => {
-      // Check if logged in (mock)
-      const isLogged = localStorage.getItem('studentId');
-      if (isLogged) {
+      // Check if logged in (Teacher first, then Student)
+      const isTeacher = localStorage.getItem('teacherAuth') === 'true';
+      const studentId = localStorage.getItem('studentId');
+      
+      if (isTeacher) {
+        router.push('/teacher/dashboard');
+      } else if (studentId) {
         router.push('/home');
       } else {
         router.push('/login');

@@ -59,9 +59,14 @@ button {
   font-family: inherit;
 }
 
+:root {
+  /* ... existing roots ... */
+  --app-max-width: 480px;
+}
+
 /* Base App Container for Mobile App feel */
 .app-container {
-  max-width: 480px; /* Mobile width constraint on desktop */
+  max-width: var(--app-max-width); /* Dynamic width */
   margin: 0 auto;
   min-height: 100vh;
   position: relative;
@@ -70,6 +75,11 @@ button {
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
+  transition: max-width 0.3s ease;
+}
+
+.app-container.wide-container {
+  --app-max-width: 1000px;
 }
 
 .screen-container {

@@ -11,8 +11,8 @@ export default function TeacherLogin() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // Default mock password for demonstration purposes "1234"
-    if (password === '1234') {
+    // Updated password to "0815"
+    if (password === '0815') {
       localStorage.setItem('teacherAuth', 'true');
       router.push('/teacher/dashboard');
     } else {
@@ -38,7 +38,7 @@ export default function TeacherLogin() {
           선생님 전용 로그인
         </h1>
         <p style={{ color: 'var(--text-muted)', marginTop: '8px' }}>
-          관리자 비밀번호를 입력해주세요. <br/>(기본 데모 비밀번호: 1234)
+          관리자 비밀번호를 입력해주세요.
         </p>
       </div>
 

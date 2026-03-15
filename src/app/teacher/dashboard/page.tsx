@@ -75,7 +75,7 @@ export default function TeacherDashboard() {
     : [];
 
   return (
-    <div className="app-container" style={{ background: 'var(--background)' }}>
+    <div style={{ background: 'var(--background)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* Header */}
       <div style={{ background: 'var(--primary)', color: 'white', padding: '20px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
