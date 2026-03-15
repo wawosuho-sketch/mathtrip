@@ -28,19 +28,19 @@ jobs:
         uses: actions/configure-pages@v4
         with:
           static_site_generator: next
-      - name: Diagnostic - List Files
-        run: ls -R src/app
       - name: Install dependencies
         run: npm install
       - name: Build with Next.js
-        run: npm run build
+        run: |
+          npm run build
+          ls -la
         env:
           NEXT_PUBLIC_SPREADSHEET_ID: ${{ secrets.NEXT_PUBLIC_SPREADSHEET_ID }}
           NEXT_PUBLIC_KAKAOTALK_URL: ${{ secrets.NEXT_PUBLIC_KAKAOTALK_URL }}
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./out
+          path: out
 
   deploy:
     environment:
