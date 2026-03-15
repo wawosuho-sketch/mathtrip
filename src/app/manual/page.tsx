@@ -238,7 +238,7 @@ export default function ManualPage() {
                             fontSize: '0.88rem',
                             lineHeight: 1.6,
                             color: 'var(--foreground)',
-                            background: '#fff',
+                            background: 'var(--card-bg)',
                             borderRadius: '8px',
                             borderLeft: `3px solid ${section.color}`,
                             whiteSpace: 'pre-line'
