@@ -5,8 +5,8 @@ const nextConfig: NextConfig = {
   basePath: '/mathtrip',
   assetPrefix: '/mathtrip',
   images: {
-    unoptimized: true,
-  },
+    unoptimized: true
+  }
 };
 
 export default nextConfig;
