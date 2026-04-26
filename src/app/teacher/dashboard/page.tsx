@@ -169,59 +169,73 @@ export default function TeacherDashboard() {
               <button onClick={() => { setSelectedDay(2); setSelectedRoom(''); }} style={{ flex: 1, padding: '10px', borderRadius: '8px', fontWeight: 600, background: selectedDay === 2 ? 'var(--secondary)' : 'var(--card-bg)', color: selectedDay === 2 ? 'white' : 'var(--text-muted)', border: `1px solid ${selectedDay === 2 ? 'var(--secondary)' : 'var(--border-color)'}`, fontSize: '0.9rem' }}>2일차</button>
             </div>
 
-            {/* Selected Room Detail - shown at TOP */}
-            {selectedRoom && (
-              <div style={{ animation: 'fadeUp 0.2s ease-out forwards', marginBottom: '14px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                  <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>{selectedRoom}호 명단</h3>
-                  <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-                    <span style={{ background: selectedDay === 1 ? 'var(--primary-light)' : 'var(--secondary)', color: 'white', padding: '3px 10px', borderRadius: '16px', fontSize: '0.75rem', fontWeight: 600 }}>{roomStudents.length}명</span>
-                    <button onClick={() => setSelectedRoom('')} style={{ background: 'var(--background)', border: '1px solid var(--border-color)', borderRadius: '50%', width: '26px', height: '26px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', color: 'var(--text-muted)' }}>✕</button>
-                  </div>
-                </div>
-                <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-                  {roomStudents.map((s, idx) => {
-                    const isLeader = selectedDay === 1 ? s.room1Leader : s.room2Leader;
-                    return (
-                      <div key={s.id} style={{ display: 'flex', padding: '10px 14px', borderBottom: idx !== roomStudents.length - 1 ? '1px solid var(--border-color)' : 'none', alignItems: 'center', gap: '10px' }}>
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                            {isLeader && <Crown size={14} color="var(--accent)" />}
-                            <span style={{ fontWeight: isLeader ? 700 : 500 }}>{s.name}</span>
-                            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{s.id}</span>
-                            {isLeader && <span style={{ fontSize: '0.65rem', background: 'rgba(245,158,11,0.15)', color: 'var(--accent)', padding: '1px 6px', borderRadius: '8px', fontWeight: 600 }}>방장</span>}
-                            {s.note && <span style={{ fontSize: '0.65rem', background: 'var(--accent)', color: 'white', padding: '1px 5px', borderRadius: '8px' }}>특이</span>}
-                          </div>
+            {/* Room Grid - chunked into rows of 3, with inline detail */}
+            {(() => {
+              const COLS = 3;
+              const rows: string[][] = [];
+              for (let i = 0; i < currentRooms.length; i += COLS) {
+                rows.push(currentRooms.slice(i, i + COLS));
+              }
+              const selectedRowIdx = selectedRoom ? rows.findIndex(row => row.includes(selectedRoom)) : -1;
+              const accent = selectedDay === 1 ? 'var(--primary)' : 'var(--secondary)';
+
+              return rows.map((row, rowIdx) => (
+                <div key={rowIdx}>
+                  {/* Detail panel appears above this row if the selected room is in this row */}
+                  {selectedRoom && rowIdx === selectedRowIdx && (
+                    <div style={{ animation: 'fadeUp 0.15s ease-out forwards', marginBottom: '8px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                        <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>{selectedRoom}호 명단</h3>
+                        <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                          <span style={{ background: accent, color: 'white', padding: '3px 10px', borderRadius: '16px', fontSize: '0.75rem', fontWeight: 600 }}>{roomStudents.length}명</span>
+                          <button onClick={() => setSelectedRoom('')} style={{ background: 'var(--background)', border: '1px solid var(--border-color)', borderRadius: '50%', width: '26px', height: '26px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', color: 'var(--text-muted)' }}>✕</button>
                         </div>
                       </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
+                      <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+                        {roomStudents.map((s, idx) => {
+                          const isLeader = selectedDay === 1 ? s.room1Leader : s.room2Leader;
+                          return (
+                            <div key={s.id} style={{ display: 'flex', padding: '10px 14px', borderBottom: idx !== roomStudents.length - 1 ? '1px solid var(--border-color)' : 'none', alignItems: 'center', gap: '10px' }}>
+                              <div style={{ flex: 1, minWidth: 0 }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                                  {isLeader && <Crown size={14} color="var(--accent)" />}
+                                  <span style={{ fontWeight: isLeader ? 700 : 500 }}>{s.name}</span>
+                                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{s.id}</span>
+                                  {isLeader && <span style={{ fontSize: '0.65rem', background: 'rgba(245,158,11,0.15)', color: 'var(--accent)', padding: '1px 6px', borderRadius: '8px', fontWeight: 600 }}>방장</span>}
+                                  {s.note && <span style={{ fontSize: '0.65rem', background: 'var(--accent)', color: 'white', padding: '1px 5px', borderRadius: '8px' }}>특이</span>}
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
 
-            {/* Room Grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', marginBottom: '16px' }}>
-              {currentRooms.map(room => {
-                const count = students.filter(s => selectedDay === 1 ? s.room1 === room : s.room2 === room).length;
-                const isSelected = selectedRoom === room;
-                const hasLeader = students.some(s => selectedDay === 1 ? (s.room1 === room && s.room1Leader) : (s.room2 === room && s.room2Leader));
-                const accent = selectedDay === 1 ? 'var(--primary)' : 'var(--secondary)';
-                return (
-                  <button key={room} onClick={() => setSelectedRoom(isSelected ? '' : room)} style={{
-                    padding: '10px 6px', borderRadius: '10px', textAlign: 'center',
-                    background: isSelected ? accent : 'var(--card-bg)',
-                    color: isSelected ? 'white' : 'var(--foreground)',
-                    border: `1px solid ${isSelected ? accent : 'var(--border-color)'}`,
-                    transition: 'all 0.2s ease', position: 'relative',
-                  }}>
-                    <div style={{ fontSize: '0.95rem', fontWeight: 700 }}>{room}</div>
-                    <div style={{ fontSize: '0.7rem', opacity: 0.7, marginTop: '2px' }}>{count}명</div>
-                    {hasLeader && <Crown size={10} style={{ position: 'absolute', top: '4px', right: '4px', color: isSelected ? 'white' : 'var(--accent)' }} />}
-                  </button>
-                );
-              })}
-            </div>
+                  {/* Row of 3 room cards */}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', marginBottom: '8px' }}>
+                    {row.map(room => {
+                      const count = students.filter(s => selectedDay === 1 ? s.room1 === room : s.room2 === room).length;
+                      const isSelected = selectedRoom === room;
+                      const hasLeader = students.some(s => selectedDay === 1 ? (s.room1 === room && s.room1Leader) : (s.room2 === room && s.room2Leader));
+                      return (
+                        <button key={room} onClick={() => setSelectedRoom(isSelected ? '' : room)} style={{
+                          padding: '10px 6px', borderRadius: '10px', textAlign: 'center',
+                          background: isSelected ? accent : 'var(--card-bg)',
+                          color: isSelected ? 'white' : 'var(--foreground)',
+                          border: `1px solid ${isSelected ? accent : 'var(--border-color)'}`,
+                          transition: 'all 0.2s ease', position: 'relative',
+                        }}>
+                          <div style={{ fontSize: '0.95rem', fontWeight: 700 }}>{room}</div>
+                          <div style={{ fontSize: '0.7rem', opacity: 0.7, marginTop: '2px' }}>{count}명</div>
+                          {hasLeader && <Crown size={10} style={{ position: 'absolute', top: '4px', right: '4px', color: isSelected ? 'white' : 'var(--accent)' }} />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ));
+            })()}
           </div>
         )}
 
