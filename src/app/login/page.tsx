@@ -27,13 +27,13 @@ export default function LoginPage() {
       
       if (students && students.length > 0) {
         const student = students.find(
-          (s: any) => s.id === studentId.trim() && s.name === name.trim()
+          (s) => s.id === studentId.trim() && s.name === name.trim()
         );
 
         if (student) {
-          localStorage.setItem('studentId', student.id || '');
-          localStorage.setItem('studentName', student.name || '');
-          if (student.team) localStorage.setItem('studentTeam', student.team);
+          localStorage.setItem('studentId', student.id);
+          localStorage.setItem('studentName', student.name);
+          localStorage.setItem('studentCoach', student.coach);
           router.push('/home');
         } else {
           setError('일치하는 학생 정보가 없습니다. 학번과 이름을 확인해주세요.');
