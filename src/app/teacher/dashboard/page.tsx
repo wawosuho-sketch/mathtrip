@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, Bus, BedDouble, LogOut, ShieldCheck, AlertCircle, ChevronDown, Crown, X, ClipboardCheck, Users, CarFront, Home } from 'lucide-react';
+import { Search, Bus, BedDouble, LogOut, ShieldCheck, AlertCircle, ChevronDown, X, ClipboardCheck, Users, CarFront, Home } from 'lucide-react';
 import { getStudents, getExternal, getExternal2, getSafeEdu, getTeacherChecks, getTeacherRooms } from '@/lib/google-sheets';
 import type { Student, External, SafeEdu, TeacherCheck, TeacherRoom } from '@/lib/google-sheets';
 
@@ -165,7 +165,7 @@ export default function TeacherDashboard() {
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                           <span style={{ fontWeight: 600 }}>{s.name}</span>
                           <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{s.id}</span>
-                          {s.note && <span style={{ fontSize: '0.7rem', background: 'var(--accent)', color: 'white', padding: '1px 5px', borderRadius: '8px' }}>특이</span>}
+                          {s.note && <span style={{ fontSize: '0.65rem', background: 'rgba(245,158,11,0.1)', color: 'var(--accent)', padding: '1px 6px', borderRadius: '8px' }}>{s.note}</span>}
                         </div>
                       </div>
                     </div>
@@ -236,16 +236,13 @@ export default function TeacherDashboard() {
                               {roomStudents.map((s, idx) => {
                                 const isLeader = selectedDay === 1 ? s.room1Leader : s.room2Leader;
                                 return (
-                                  <div key={s.id} style={{ display: 'flex', padding: '10px 14px', borderBottom: idx !== roomStudents.length - 1 ? '1px solid var(--border-color)' : 'none', alignItems: 'center', gap: '10px' }}>
-                                    <div style={{ flex: 1, minWidth: 0 }}>
-                                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                                        {isLeader && <Crown size={14} color="var(--accent)" />}
-                                        <span style={{ fontWeight: isLeader ? 700 : 500 }}>{s.name}</span>
-                                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{s.id}</span>
-                                        {isLeader && <span style={{ fontSize: '0.65rem', background: 'rgba(245,158,11,0.15)', color: 'var(--accent)', padding: '1px 6px', borderRadius: '8px', fontWeight: 600 }}>방장</span>}
-                                        {s.note && <span style={{ fontSize: '0.65rem', background: 'var(--accent)', color: 'white', padding: '1px 5px', borderRadius: '8px' }}>특이</span>}
-                                      </div>
+                                  <div key={s.id} style={{ padding: '10px 14px', borderBottom: idx !== roomStudents.length - 1 ? '1px solid var(--border-color)' : 'none' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                                      <span style={{ fontWeight: isLeader ? 700 : 500 }}>{s.name}</span>
+                                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{s.id}</span>
+                                      {isLeader && <span style={{ fontSize: '0.65rem', background: 'rgba(245,158,11,0.15)', color: 'var(--accent)', padding: '1px 6px', borderRadius: '8px', fontWeight: 600 }}>방장</span>}
                                     </div>
+                                    {s.note && <div style={{ fontSize: '0.72rem', color: 'var(--accent)', marginTop: '3px', paddingLeft: '2px' }}>⚠ {s.note}</div>}
                                   </div>
                                 );
                               })}
@@ -267,7 +264,7 @@ export default function TeacherDashboard() {
                               }}>
                                 <div style={{ fontSize: '0.85rem', fontWeight: 700 }}>{room.replace(/^\d+층\s*/, '')}</div>
                                 <div style={{ fontSize: '0.65rem', opacity: 0.7, marginTop: '2px' }}>{count}명</div>
-                                {hasLeader && <Crown size={10} style={{ position: 'absolute', top: '4px', right: '4px', color: isSelected ? 'white' : 'var(--accent)' }} />}
+                                {hasLeader && <span style={{ position: 'absolute', top: '3px', right: '5px', fontSize: '0.6rem', color: isSelected ? 'white' : 'var(--accent)' }}>★</span>}
                               </button>
                             );
                           })}
@@ -369,49 +366,67 @@ export default function TeacherDashboard() {
           </div>
         )}
 
-        {/* Course Check Tab */}
+        {/* Course Check Tab - detail panel above grid like room tab */}
         {activeTab === 'check' && (
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
               <ClipboardCheck size={20} color="var(--primary)" />
               <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>코스별 확인사항</h3>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '6px', marginBottom: openCourseIdx !== null ? '10px' : '0' }}>
-              {teacherChecks.map((tc, idx) => {
-                const colors = ['#4f46e5','#ef4444','#22c55e','#f59e0b','#a855f7','#06b6d4','#ec4899','#84cc16','#f97316','#6366f1','#14b8a6','#e11d48','#8b5cf6','#0ea5e9','#d946ef','#eab308'];
-                const color = colors[idx % colors.length];
-                const isOpen = openCourseIdx === idx;
-                return (
-                  <button key={idx} onClick={() => setOpenCourseIdx(isOpen ? null : idx)} style={{
-                    padding: '8px 4px', borderRadius: '8px', textAlign: 'center',
-                    background: isOpen ? color : 'var(--card-bg)',
-                    color: isOpen ? 'white' : 'var(--foreground)',
-                    border: `1.5px solid ${isOpen ? color : 'var(--border-color)'}`,
-                    fontSize: '0.68rem', fontWeight: 600, lineHeight: 1.3,
-                    transition: 'all 0.2s ease', minHeight: '42px',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  }}>
-                    {tc.course.length > 8 ? tc.course.slice(0, 8) + '…' : tc.course}
-                  </button>
-                );
-              })}
-            </div>
-            {openCourseIdx !== null && teacherChecks[openCourseIdx] && (
-              <div style={{ animation: 'fadeUp 0.15s ease-out forwards' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                  <h4 style={{ fontSize: '0.95rem', fontWeight: 700 }}>{teacherChecks[openCourseIdx].course}</h4>
-                  <button onClick={() => setOpenCourseIdx(null)} style={{ background: 'var(--background)', border: '1px solid var(--border-color)', borderRadius: '50%', width: '26px', height: '26px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>✕</button>
-                </div>
-                <div className="card" style={{ padding: '14px' }}>
-                  {teacherChecks[openCourseIdx].checks.split('\n').filter(Boolean).map((line, li) => (
-                    <div key={li} style={{ display: 'flex', gap: '8px', padding: '6px 0', borderBottom: li < teacherChecks[openCourseIdx].checks.split('\n').filter(Boolean).length - 1 ? '1px solid var(--border-color)' : 'none', fontSize: '0.83rem', lineHeight: 1.5 }}>
-                      <span style={{ color: 'var(--primary)', fontWeight: 700, flexShrink: 0 }}>✓</span>
-                      <span>{line.trim()}</span>
+            {(() => {
+              const COLS = 3;
+              const colors = ['#4f46e5','#ef4444','#22c55e','#f59e0b','#a855f7','#06b6d4','#ec4899','#84cc16','#f97316','#6366f1','#14b8a6','#e11d48','#8b5cf6','#0ea5e9','#d946ef','#eab308'];
+              const rows: number[][] = [];
+              for (let i = 0; i < teacherChecks.length; i += COLS) {
+                const row: number[] = [];
+                for (let j = i; j < Math.min(i + COLS, teacherChecks.length); j++) row.push(j);
+                rows.push(row);
+              }
+              const selectedRowIdx = openCourseIdx !== null ? rows.findIndex(row => row.includes(openCourseIdx)) : -1;
+
+              return rows.map((row, rowIdx) => (
+                <div key={rowIdx}>
+                  {/* Detail panel above the row containing the selected course */}
+                  {openCourseIdx !== null && rowIdx === selectedRowIdx && teacherChecks[openCourseIdx] && (
+                    <div style={{ animation: 'fadeUp 0.15s ease-out forwards', marginBottom: '8px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                        <h4 style={{ fontSize: '0.95rem', fontWeight: 700 }}>{teacherChecks[openCourseIdx].course}</h4>
+                        <button onClick={() => setOpenCourseIdx(null)} style={{ background: 'var(--background)', border: '1px solid var(--border-color)', borderRadius: '50%', width: '26px', height: '26px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>✕</button>
+                      </div>
+                      <div className="card" style={{ padding: '14px' }}>
+                        {teacherChecks[openCourseIdx].checks.split('\n').filter(Boolean).map((line, li) => (
+                          <div key={li} style={{ display: 'flex', gap: '8px', padding: '6px 0', borderBottom: li < teacherChecks[openCourseIdx].checks.split('\n').filter(Boolean).length - 1 ? '1px solid var(--border-color)' : 'none', fontSize: '0.83rem', lineHeight: 1.5 }}>
+                            <span style={{ color: 'var(--primary)', fontWeight: 700, flexShrink: 0 }}>✓</span>
+                            <span>{line.trim()}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  ))}
+                  )}
+                  {/* Row of course cards */}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '6px', marginBottom: '6px' }}>
+                    {row.map(idx => {
+                      const tc = teacherChecks[idx];
+                      const color = colors[idx % colors.length];
+                      const isOpen = openCourseIdx === idx;
+                      return (
+                        <button key={idx} onClick={() => setOpenCourseIdx(isOpen ? null : idx)} style={{
+                          padding: '8px 4px', borderRadius: '8px', textAlign: 'center',
+                          background: isOpen ? color : 'var(--card-bg)',
+                          color: isOpen ? 'white' : 'var(--foreground)',
+                          border: `1.5px solid ${isOpen ? color : 'var(--border-color)'}`,
+                          fontSize: '0.68rem', fontWeight: 600, lineHeight: 1.3,
+                          transition: 'all 0.2s ease', minHeight: '42px',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        }}>
+                          {tc.course.length > 8 ? tc.course.slice(0, 8) + '…' : tc.course}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            )}
+              ));
+            })()}
           </div>
         )}
 
