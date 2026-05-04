@@ -195,6 +195,46 @@ export async function getSafeEdu(): Promise<SafeEdu[]> {
   })).filter(s => s.category && s.subItem);
 }
 
+// ── TeacherCheck (코스별 확인사항) ──
+export interface TeacherCheck {
+  course: string;
+  checks: string;
+}
+
+export async function getTeacherChecks(): Promise<TeacherCheck[]> {
+  const raw = await fetchSheet<any>('teachercheck');
+  return raw.map(row => ({
+    course: (row['코스'] || '').trim(),
+    checks: (row['확인사항 '] || row['확인사항'] || '').trim(),
+  })).filter(tc => tc.course);
+}
+
+// ── TeacherRoom (교사 방배치) ──
+export interface TeacherRoom {
+  name: string;
+  room1: string; // 소노문
+  room2: string; // 강동리조트
+}
+
+export async function getTeacherRooms(): Promise<TeacherRoom[]> {
+  const raw = await fetchSheet<any>('ch room');
+  return raw.map(row => ({
+    name: (row['이름'] || '').trim(),
+    room1: (row['소노문'] || '').trim(),
+    room2: (row['강동리조트'] || '').trim(),
+  })).filter(tr => tr.name);
+}
+
+// ── getExternal2 (운전기사) ──
+export async function getExternal2(): Promise<External[]> {
+  const raw = await fetchSheet<any>('external2');
+  return raw.map(row => ({
+    type: (row['구분'] || '').trim(),
+    name: (row['이름'] || '').trim(),
+    phone: (row['연락처'] || '').trim(),
+  }));
+}
+
 // ── Legacy: getSchedules (kept for backward compat but unused) ──
 export interface Schedule {
   day: string;
