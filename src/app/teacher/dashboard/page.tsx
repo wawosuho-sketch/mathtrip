@@ -153,13 +153,14 @@ export default function TeacherDashboard() {
             </select>
             {selectedBus && (() => {
               const busNum = selectedBus.replace(/[^0-9]/g, '').padStart(2, '0');
+              const basePath = '/mathtrip';
               return (
                 <div>
                   {/* Seating Chart */}
                   <div className="card" style={{ padding: '10px', marginBottom: '14px', textAlign: 'center' }}>
                     <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '8px', color: 'var(--primary)' }}>좌석배치도</h3>
                     <img
-                      src={`/bus/${busNum}.jpg`}
+                      src={`${basePath}/bus/${busNum}.jpg`}
                       alt={`${selectedBus} 좌석배치도`}
                       style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--border-color)' }}
                     />
