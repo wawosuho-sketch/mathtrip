@@ -8,6 +8,7 @@ import KakaoNoticeButton from '@/components/KakaoNoticeButton';
 export default function EmergencyPage() {
   const [orgs, setOrgs] = useState<{ name: string; phone: string }[]>([]);
   const [loading, setLoading] = useState(true);
+  const [studentCoach, setStudentCoach] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -18,6 +19,7 @@ export default function EmergencyPage() {
       finally { setLoading(false); }
     };
     fetchData();
+    setStudentCoach(localStorage.getItem('studentCoach') || '');
   }, []);
 
   if (loading) return <div style={{ padding: '24px', textAlign: 'center' }}>비상연락망을 불러오는 중...</div>;
@@ -31,7 +33,7 @@ export default function EmergencyPage() {
       <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '24px' }}>
         위급 상황 발생 시 아래 기관으로 즉시 연락 바랍니다.
       </p>
-      <KakaoNoticeButton />
+      <KakaoNoticeButton coach={studentCoach} />
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
         {orgs.map((contact, idx) => (

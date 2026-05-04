@@ -9,6 +9,7 @@ import KakaoNoticeButton from '@/components/KakaoNoticeButton';
 export default function ContactsPage() {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
+  const [studentCoach, setStudentCoach] = useState('');
 
   useEffect(() => {
     const fetchContactsData = async () => {
@@ -19,6 +20,7 @@ export default function ContactsPage() {
       finally { setLoading(false); }
     };
     fetchContactsData();
+    setStudentCoach(localStorage.getItem('studentCoach') || '');
   }, []);
 
   if (loading) return <div style={{ padding: '24px', textAlign: 'center' }}>연락처를 불러오는 중...</div>;
@@ -26,7 +28,7 @@ export default function ContactsPage() {
   return (
     <div className="screen-container">
       <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--foreground)', marginBottom: '16px' }}>선생님 연락처</h2>
-      <KakaoNoticeButton />
+      <KakaoNoticeButton coach={studentCoach} />
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
         {contacts.map((contact, idx) => (
