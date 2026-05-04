@@ -151,28 +151,42 @@ export default function TeacherDashboard() {
               <option value="">호차를 선택하세요</option>
               {coaches.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
-            {selectedBus && (
-              <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                  <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>탑승 명단 (학번순)</h3>
-                  <span style={{ background: 'var(--primary-light)', color: 'white', padding: '3px 10px', borderRadius: '16px', fontSize: '0.75rem', fontWeight: 600 }}>총 {busRoster.length}명</span>
-                </div>
-                <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-                  {busRoster.map((s, idx) => (
-                    <div key={s.id} style={{ display: 'flex', padding: '10px 14px', borderBottom: idx !== busRoster.length - 1 ? '1px solid var(--border-color)' : 'none', alignItems: 'center', gap: '10px' }}>
-                      <div style={{ background: 'var(--background)', width: '26px', height: '26px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-muted)', flexShrink: 0 }}>{idx + 1}</div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                          <span style={{ fontWeight: 600 }}>{s.name}</span>
-                          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{s.id}</span>
-                          {s.note && <span style={{ fontSize: '0.65rem', background: 'rgba(245,158,11,0.1)', color: 'var(--accent)', padding: '1px 6px', borderRadius: '8px' }}>{s.note}</span>}
+            {selectedBus && (() => {
+              const busNum = selectedBus.replace(/[^0-9]/g, '').padStart(2, '0');
+              return (
+                <div>
+                  {/* Seating Chart */}
+                  <div className="card" style={{ padding: '10px', marginBottom: '14px', textAlign: 'center' }}>
+                    <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '8px', color: 'var(--primary)' }}>좌석배치도</h3>
+                    <img
+                      src={`/bus/${busNum}.jpg`}
+                      alt={`${selectedBus} 좌석배치도`}
+                      style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--border-color)' }}
+                    />
+                  </div>
+
+                  {/* Roster */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                    <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>탑승 명단 (학번순)</h3>
+                    <span style={{ background: 'var(--primary-light)', color: 'white', padding: '3px 10px', borderRadius: '16px', fontSize: '0.75rem', fontWeight: 600 }}>총 {busRoster.length}명</span>
+                  </div>
+                  <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+                    {busRoster.map((s, idx) => (
+                      <div key={s.id} style={{ display: 'flex', padding: '10px 14px', borderBottom: idx !== busRoster.length - 1 ? '1px solid var(--border-color)' : 'none', alignItems: 'center', gap: '10px' }}>
+                        <div style={{ background: 'var(--background)', width: '26px', height: '26px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-muted)', flexShrink: 0 }}>{idx + 1}</div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                            <span style={{ fontWeight: 600 }}>{s.name}</span>
+                            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{s.id}</span>
+                            {s.note && <span style={{ fontSize: '0.65rem', background: 'rgba(245,158,11,0.1)', color: 'var(--accent)', padding: '1px 6px', borderRadius: '8px' }}>{s.note}</span>}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              );
+            })()}
           </div>
         )}
 
