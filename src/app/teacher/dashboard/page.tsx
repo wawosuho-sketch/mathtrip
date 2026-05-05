@@ -81,9 +81,20 @@ export default function TeacherDashboard() {
           <span style={{ color: 'var(--text-muted)', display: 'block', fontSize: '0.7rem' }}>2일차 방</span>
           <strong>{s.room2 || '-'}</strong> {s.room2Leader && <span style={{ fontSize: '0.7rem', color: 'var(--accent)' }}>⭐방장</span>}
         </div>
-        <div style={{ background: 'var(--background)', padding: '6px 8px', borderRadius: '6px' }}>
-          <span style={{ color: 'var(--text-muted)', display: 'block', fontSize: '0.7rem' }}>식사팀</span>
-          <span style={{ fontSize: '0.78rem' }}>{s.mealTeam ? s.mealTeam.split(/[,，]/).length + '명' : '-'}</span>
+        <div style={{ background: 'var(--background)', padding: '6px 8px', borderRadius: '6px', gridColumn: '1 / -1' }}>
+          <span style={{ color: 'var(--text-muted)', display: 'block', fontSize: '0.7rem', marginBottom: '2px' }}>식사팀</span>
+          {s.mealTeam ? (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+              {s.mealTeam.split(/[,，]/).map((name, i) => (
+                <span key={i} style={{
+                  fontSize: '0.78rem', fontWeight: name.trim() === s.name ? 700 : 500,
+                  background: name.trim() === s.name ? 'var(--primary)' : 'rgba(79,70,229,0.08)',
+                  color: name.trim() === s.name ? 'white' : 'var(--foreground)',
+                  padding: '1px 7px', borderRadius: '10px',
+                }}>{name.trim()}</span>
+              ))}
+            </div>
+          ) : <span style={{ fontSize: '0.78rem' }}>-</span>}
         </div>
       </div>
       {s.note && (
