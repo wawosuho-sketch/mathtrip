@@ -70,7 +70,7 @@ async function fetchSheet<T>(sheetName: string): Promise<T[]> {
     return [];
   }
 
-  const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}&headers=0`;
+  const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}&headers=1`;
 
   try {
     const response = await fetch(url, { cache: 'no-store' });
