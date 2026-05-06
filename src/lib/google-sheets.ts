@@ -70,10 +70,10 @@ async function fetchSheet<T>(sheetName: string): Promise<T[]> {
     return [];
   }
 
-  const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`;
+  const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}&headers=0`;
 
   try {
-    const response = await fetch(url, { next: { revalidate: 10 } });
+    const response = await fetch(url, { cache: 'no-store' });
     if (!response.ok) {
       throw new Error(`Failed to fetch sheet ${sheetName}`);
     }
