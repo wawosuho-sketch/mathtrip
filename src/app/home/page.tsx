@@ -53,7 +53,7 @@ export default function HomePage() {
 
   // Parse meal team members
   const mealMembers = student.mealTeam
-    ? student.mealTeam.split(/[,，]/).map(s => s.trim()).filter(Boolean)
+    ? student.mealTeam.split(/[,，\s]+/).map(s => s.trim()).filter(Boolean)
     : [];
 
   return (

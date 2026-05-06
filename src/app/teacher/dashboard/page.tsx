@@ -85,7 +85,7 @@ export default function TeacherDashboard() {
           <span style={{ color: 'var(--text-muted)', display: 'block', fontSize: '0.7rem', marginBottom: '2px' }}>식사팀</span>
           {s.mealTeam ? (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
-              {s.mealTeam.split(/[,，]/).map((name, i) => (
+              {s.mealTeam.split(/[,，\s]+/).filter(Boolean).map((name, i) => (
                 <span key={i} style={{
                   fontSize: '0.78rem', fontWeight: name.trim() === s.name ? 700 : 500,
                   background: name.trim() === s.name ? 'var(--primary)' : 'rgba(79,70,229,0.08)',
