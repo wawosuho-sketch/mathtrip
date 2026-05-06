@@ -179,10 +179,29 @@ export async function getExternal(): Promise<External[]> {
 // ── getEmergencyContacts ──
 export async function getEmergencyContacts(): Promise<{ name: string; phone: string }[]> {
   const raw = await fetchSheet<any>('emergency');
-  return raw.map(row => ({
-    name: (row['기관'] || '').trim(),
-    phone: (row['연락처'] || '').trim(),
-  }));
+  if (!raw || raw.length === 0) return [];
+
+  const keys = Object.keys(raw[0]);
+  const contacts: { name: string; phone: string }[] = [];
+
+  // If the header row itself contains actual data (e.g., missing header row)
+  let headerName = keys[0] || '';
+  let headerPhone = keys[1] || '';
+  if (headerName !== '기관' || headerPhone !== '연락처') {
+    let n = headerName.replace(/^기관\s*/, '').trim();
+    let p = headerPhone.replace(/^연락처\s*/, '').trim();
+    if (n || p) contacts.push({ name: n, phone: p });
+  }
+
+  for (const row of raw) {
+    const n = (row[keys[0]] || '').trim();
+    const p = (row[keys[1]] || '').trim();
+    if (n || p) {
+      contacts.push({ name: n, phone: p });
+    }
+  }
+
+  return contacts;
 }
 
 // ── getSafeEdu ──
@@ -204,11 +223,21 @@ export interface TeacherCheck {
 
 export async function getTeacherChecks(): Promise<TeacherCheck[]> {
   const raw = await fetchSheet<any>('teachercheck');
-  return raw.map(row => ({
-    course: (row['코스'] || '').trim(),
-    leadChecks: (row['정'] || '').trim(),
-    supportChecks: (row['부'] || '').trim(),
-  })).filter(tc => tc.course);
+  return raw.map(row => {
+    let course = '';
+    let leadChecks = '';
+    let supportChecks = '';
+    for (const key of Object.keys(row)) {
+      if (key.includes('코스')) course = row[key];
+      else if (key.includes('정') && !key.includes('일정')) leadChecks = row[key];
+      else if (key.includes('부')) supportChecks = row[key];
+    }
+    return {
+      course: (course || '').trim(),
+      leadChecks: (leadChecks || '').trim(),
+      supportChecks: (supportChecks || '').trim(),
+    };
+  }).filter(tc => tc.course);
 }
 
 // ── TeacherRoom (교사 방배치) ──
