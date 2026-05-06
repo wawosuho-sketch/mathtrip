@@ -419,13 +419,37 @@ export default function TeacherDashboard() {
                         <h4 style={{ fontSize: '0.95rem', fontWeight: 700 }}>{teacherChecks[openCourseIdx].course}</h4>
                         <button onClick={() => setOpenCourseIdx(null)} style={{ background: 'var(--background)', border: '1px solid var(--border-color)', borderRadius: '50%', width: '26px', height: '26px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>✕</button>
                       </div>
-                      <div className="card" style={{ padding: '14px' }}>
-                        {teacherChecks[openCourseIdx].checks.split('\n').filter(Boolean).map((line, li) => (
-                          <div key={li} style={{ display: 'flex', gap: '8px', padding: '6px 0', borderBottom: li < teacherChecks[openCourseIdx].checks.split('\n').filter(Boolean).length - 1 ? '1px solid var(--border-color)' : 'none', fontSize: '0.83rem', lineHeight: 1.5 }}>
-                            <span style={{ color: 'var(--primary)', fontWeight: 700, flexShrink: 0 }}>✓</span>
-                            <span>{line.trim()}</span>
+                      <div className="card" style={{ padding: '14px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                        {teacherChecks[openCourseIdx].leadChecks && (
+                          <div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
+                              <span style={{ background: 'var(--primary)', color: 'white', fontSize: '0.7rem', fontWeight: 700, padding: '2px 8px', borderRadius: '12px' }}>정교사</span>
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                              {teacherChecks[openCourseIdx].leadChecks.split('\n').filter(Boolean).map((line, li) => (
+                                <div key={`lead-${li}`} style={{ display: 'flex', gap: '8px', fontSize: '0.85rem', lineHeight: 1.5 }}>
+                                  <span style={{ color: 'var(--primary)', fontWeight: 700, flexShrink: 0 }}>•</span>
+                                  <span>{line.trim()}</span>
+                                </div>
+                              ))}
+                            </div>
                           </div>
-                        ))}
+                        )}
+                        {teacherChecks[openCourseIdx].supportChecks && (
+                          <div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
+                              <span style={{ background: 'var(--secondary)', color: 'white', fontSize: '0.7rem', fontWeight: 700, padding: '2px 8px', borderRadius: '12px' }}>부교사</span>
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                              {teacherChecks[openCourseIdx].supportChecks.split('\n').filter(Boolean).map((line, li) => (
+                                <div key={`support-${li}`} style={{ display: 'flex', gap: '8px', fontSize: '0.85rem', lineHeight: 1.5 }}>
+                                  <span style={{ color: 'var(--secondary)', fontWeight: 700, flexShrink: 0 }}>•</span>
+                                  <span>{line.trim()}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}

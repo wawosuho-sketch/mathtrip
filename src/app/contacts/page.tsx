@@ -42,17 +42,27 @@ export default function ContactsPage() {
                   </span>
                 )}
               </div>
-              <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>{contact.type}</p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>{contact.type}</span>
+                {contact.phone && (
+                  <>
+                    <span style={{ fontSize: '0.7rem', color: 'var(--border-color)' }}>|</span>
+                    <a href={`tel:${contact.phone}`} style={{ fontSize: '0.85rem', color: 'var(--foreground)', textDecoration: 'none', fontWeight: 500, letterSpacing: '0.5px' }}>
+                      {contact.phone.replace(/(\d{2,3})(\d{3,4})(\d{4})/, '$1-$2-$3')}
+                    </a>
+                  </>
+                )}
+              </div>
             </div>
             {contact.phone && (
               <a href={`tel:${contact.phone}`} style={{
                 background: 'var(--primary)', color: 'white',
-                padding: '7px 12px', borderRadius: '18px',
-                display: 'flex', alignItems: 'center', gap: '5px',
-                fontSize: '0.8rem', fontWeight: 600, boxShadow: 'var(--shadow-sm)',
-                textDecoration: 'none', flexShrink: 0,
+                padding: '8px', borderRadius: '50%',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                boxShadow: 'var(--shadow-sm)',
+                textDecoration: 'none', flexShrink: 0, width: '38px', height: '38px'
               }}>
-                <Phone size={13} /> 통화
+                <Phone size={16} />
               </a>
             )}
           </div>

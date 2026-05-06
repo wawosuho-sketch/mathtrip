@@ -198,14 +198,16 @@ export async function getSafeEdu(): Promise<SafeEdu[]> {
 // ── TeacherCheck (코스별 확인사항) ──
 export interface TeacherCheck {
   course: string;
-  checks: string;
+  leadChecks: string;
+  supportChecks: string;
 }
 
 export async function getTeacherChecks(): Promise<TeacherCheck[]> {
   const raw = await fetchSheet<any>('teachercheck');
   return raw.map(row => ({
     course: (row['코스'] || '').trim(),
-    checks: (row['확인사항 '] || row['확인사항'] || '').trim(),
+    leadChecks: (row['정'] || '').trim(),
+    supportChecks: (row['부'] || '').trim(),
   })).filter(tc => tc.course);
 }
 
