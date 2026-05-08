@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 async function fetchHeaders(sheet) {
-  const url = `https://docs.google.com/spreadsheets/d/1nZAWehFS4m7SGeznZ1VW7tI8yv20KrOyTT0NoMrifZY/gviz/tq?tqx=out:csv&sheet=${sheet}`;
+  const url = `https://docs.google.com/spreadsheets/d/YOUR_SPREADSHEET_ID_HERE/gviz/tq?tqx=out:csv&sheet=${sheet}`;
   try {
     const res = await fetch(url);
     const text = await res.text();

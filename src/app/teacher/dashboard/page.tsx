@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, Bus, BedDouble, LogOut, ShieldCheck, AlertCircle, ChevronDown, X, ClipboardCheck, Users, CarFront, Home } from 'lucide-react';
-import { getStudents, getExternal, getExternal2, getSafeEdu, getTeacherChecks, getTeacherRooms } from '@/lib/google-sheets';
-import type { Student, External, SafeEdu, TeacherCheck, TeacherRoom } from '@/lib/google-sheets';
+import { Search, Bus, BedDouble, LogOut, ShieldCheck, AlertCircle, ChevronDown, X, ClipboardCheck, Users, CarFront, Home, Map } from 'lucide-react';
+import { getStudents, getExternal, getExternal2, getSafeEdu, getTeacherChecks, getTeacherRooms, getExitMaps } from '@/lib/google-sheets';
+import type { Student, External, SafeEdu, TeacherCheck, TeacherRoom, ExitMapData } from '@/lib/google-sheets';
 
 export default function TeacherDashboard() {
   const router = useRouter();
@@ -14,6 +14,7 @@ export default function TeacherDashboard() {
   const [safeEduData, setSafeEduData] = useState<SafeEdu[]>([]);
   const [teacherChecks, setTeacherChecks] = useState<TeacherCheck[]>([]);
   const [teacherRooms, setTeacherRooms] = useState<TeacherRoom[]>([]);
+  const [exitMaps, setExitMaps] = useState<ExitMapData>({ day1: [], day2: [] });
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'search' | 'bus' | 'room' | 'teacherRoom' | 'external' | 'external2' | 'check' | 'safety'>('search');
   const [searchQuery, setSearchQuery] = useState('');
@@ -29,13 +30,16 @@ export default function TeacherDashboard() {
     if (localStorage.getItem('teacherAuth') !== 'true') { router.push('/teacher/login'); return; }
     const fetchData = async () => {
       try {
-        const [s, e, e2, se, tc, tr] = await Promise.all([getStudents(), getExternal(), getExternal2(), getSafeEdu(), getTeacherChecks(), getTeacherRooms()]);
+        const [s, e, e2, se, tc, tr, em] = await Promise.all([
+          getStudents(), getExternal(), getExternal2(), getSafeEdu(), getTeacherChecks(), getTeacherRooms(), getExitMaps()
+        ]);
         if (s.length > 0) setStudents(s);
         if (e.length > 0) setExternals(e);
         if (e2.length > 0) setExternals2(e2);
         if (se.length > 0) setSafeEduData(se);
         if (tc.length > 0) setTeacherChecks(tc);
         if (tr.length > 0) setTeacherRooms(tr);
+        setExitMaps(em);
       } catch { console.error('Failed to fetch'); }
       finally { setLoading(false); }
     };
@@ -386,6 +390,35 @@ export default function TeacherDashboard() {
                       </div>
                     </div>
                   ))}
+
+                  {/* Exit Maps for Teacher Room */}
+                  {teacherRoomDay === 1 && exitMaps.day1.length > 0 && (
+                    <div style={{ marginTop: '8px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+                        <Map size={18} color={accent} />
+                        <span style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--foreground)' }}>1일차 비상 대피도</span>
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        {exitMaps.day1.map((imgUrl, idx) => (
+                          <img key={idx} src={imgUrl.startsWith('/') ? `/mathtrip${imgUrl}` : imgUrl} alt={`1일차 대피도 ${idx + 1}`} style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--border-color)', boxShadow: 'var(--shadow-sm)' }} />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {teacherRoomDay === 2 && exitMaps.day2.length > 0 && (
+                    <div style={{ marginTop: '8px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+                        <Map size={18} color={accent} />
+                        <span style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--foreground)' }}>2일차 비상 대피도</span>
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        {exitMaps.day2.map((imgUrl, idx) => (
+                          <img key={idx} src={imgUrl.startsWith('/') ? `/mathtrip${imgUrl}` : imgUrl} alt={`2일차 대피도 ${idx + 1}`} style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--border-color)', boxShadow: 'var(--shadow-sm)' }} />
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               );
             })()}

@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from 'react';
-import { ChevronDown, Bus, Flame, Ambulance, MapPinOff, ShieldAlert, Play } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { ChevronDown, Bus, Flame, Ambulance, MapPinOff, ShieldAlert, Play, Map } from 'lucide-react';
+import { getExitMaps } from '@/lib/google-sheets';
+import type { ExitMapData } from '@/lib/google-sheets';
 
 interface ManualItem {
   subtitle: string;
@@ -110,6 +112,12 @@ const sections: ManualSection[] = [
 export default function ManualPage() {
   const [openSection, setOpenSection] = useState<number | null>(null);
   const [openItem, setOpenItem] = useState<string | null>(null);
+  const [exitMaps, setExitMaps] = useState<ExitMapData>({ day1: [], day2: [] });
+  const [openExitDay, setOpenExitDay] = useState<number | null>(null);
+
+  useEffect(() => {
+    getExitMaps().then(setExitMaps).catch(console.error);
+  }, []);
 
   const toggleSection = (idx: number) => {
     setOpenSection(prev => prev === idx ? null : idx);
@@ -254,6 +262,72 @@ export default function ManualPage() {
             )}
           </div>
         ))}
+
+        {/* Exit Maps Section */}
+        {(exitMaps.day1.length > 0 || exitMaps.day2.length > 0) && (
+          <div style={{ marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--foreground)', display: 'flex', alignItems: 'center', gap: '8px', paddingLeft: '4px' }}>
+              <Map size={22} color="#0ea5e9" />
+              숙소 비상 대피도
+            </h3>
+            
+            {exitMaps.day1.length > 0 && (
+              <div style={{ borderRadius: 'var(--radius-md)', overflow: 'hidden', border: '1px solid var(--border-color)', background: 'var(--card-bg)' }}>
+                <button
+                  onClick={() => setOpenExitDay(prev => prev === 1 ? null : 1)}
+                  style={{
+                    width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                    padding: '16px', background: openExitDay === 1 ? '#0ea5e9' : 'var(--card-bg)',
+                    color: openExitDay === 1 ? 'white' : 'var(--foreground)',
+                    fontWeight: 700, fontSize: '1rem',
+                    borderBottom: openExitDay === 1 ? `1px solid #0ea5e9` : 'none',
+                    transition: 'all 0.3s ease'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <span>1일차 (소노문) 비상 대피도</span>
+                  </div>
+                  <ChevronDown size={20} style={{ transform: openExitDay === 1 ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s ease' }} />
+                </button>
+                {openExitDay === 1 && (
+                  <div style={{ padding: '12px', display: 'flex', flexDirection: 'column', gap: '10px', background: 'var(--background)' }}>
+                    {exitMaps.day1.map((imgUrl, idx) => (
+                      <img key={idx} src={imgUrl.startsWith('/') ? `/mathtrip${imgUrl}` : imgUrl} alt={`1일차 대피도 ${idx + 1}`} style={{ width: '100%', borderRadius: '8px', boxShadow: 'var(--shadow-sm)' }} />
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {exitMaps.day2.length > 0 && (
+              <div style={{ borderRadius: 'var(--radius-md)', overflow: 'hidden', border: '1px solid var(--border-color)', background: 'var(--card-bg)' }}>
+                <button
+                  onClick={() => setOpenExitDay(prev => prev === 2 ? null : 2)}
+                  style={{
+                    width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                    padding: '16px', background: openExitDay === 2 ? '#0ea5e9' : 'var(--card-bg)',
+                    color: openExitDay === 2 ? 'white' : 'var(--foreground)',
+                    fontWeight: 700, fontSize: '1rem',
+                    borderBottom: openExitDay === 2 ? `1px solid #0ea5e9` : 'none',
+                    transition: 'all 0.3s ease'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <span>2일차 (강동리조트) 비상 대피도</span>
+                  </div>
+                  <ChevronDown size={20} style={{ transform: openExitDay === 2 ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s ease' }} />
+                </button>
+                {openExitDay === 2 && (
+                  <div style={{ padding: '12px', display: 'flex', flexDirection: 'column', gap: '10px', background: 'var(--background)' }}>
+                    {exitMaps.day2.map((imgUrl, idx) => (
+                      <img key={idx} src={imgUrl.startsWith('/') ? `/mathtrip${imgUrl}` : imgUrl} alt={`2일차 대피도 ${idx + 1}`} style={{ width: '100%', borderRadius: '8px', boxShadow: 'var(--shadow-sm)' }} />
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

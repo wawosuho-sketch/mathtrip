@@ -1,6 +1,10 @@
+"use server";
+
 import Papa from 'papaparse';
 
-const SPREADSHEET_ID = process.env.NEXT_PUBLIC_SPREADSHEET_ID;
+// NEXT_PUBLIC_ prefix is no longer required because this file runs on the server.
+// It will look for SPREADSHEET_ID first, and fallback to the old variable name if it exists.
+const SPREADSHEET_ID = process.env.SPREADSHEET_ID || process.env.NEXT_PUBLIC_SPREADSHEET_ID;
 
 // ── Student ──
 export interface Student {
@@ -284,3 +288,33 @@ export async function getSchedules(): Promise<Schedule[]> {
 export async function getAnnouncements(): Promise<Announcement[]> {
   return [];
 }
+
+// ── Exit Maps (비상 대피도) ──
+export interface ExitMapData {
+  day1: string[];
+  day2: string[];
+}
+
+export async function getExitMaps(): Promise<ExitMapData> {
+  const raw = await fetchSheet<any>('exit');
+  let day1: string[] = [];
+  let day2: string[] = [];
+
+  if (!raw || raw.length === 0) return { day1, day2 };
+
+  const keys = Object.keys(raw[0]);
+  
+  if (keys[0] && keys[0].includes('1일차')) {
+    const d1Str = keys[1] || '';
+    day1 = d1Str.split('\n').map((s: string) => s.trim()).filter(Boolean);
+  }
+
+  const rowVal1 = raw[0][keys[0]] || '';
+  if (rowVal1.includes('2일차')) {
+    const d2Str = raw[0][keys[1]] || '';
+    day2 = d2Str.split('\n').map((s: string) => s.trim()).filter(Boolean);
+  }
+
+  return { day1, day2 };
+}
+
