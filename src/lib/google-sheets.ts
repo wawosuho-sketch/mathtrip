@@ -1,10 +1,6 @@
-"use server";
-
 import Papa from 'papaparse';
 
-// NEXT_PUBLIC_ prefix is no longer required because this file runs on the server.
-// It will look for SPREADSHEET_ID first, and fallback to the old variable name if it exists.
-const SPREADSHEET_ID = process.env.SPREADSHEET_ID || process.env.NEXT_PUBLIC_SPREADSHEET_ID;
+const SPREADSHEET_ID = process.env.NEXT_PUBLIC_SPREADSHEET_ID || process.env.SPREADSHEET_ID;
 
 // ── Student ──
 export interface Student {
