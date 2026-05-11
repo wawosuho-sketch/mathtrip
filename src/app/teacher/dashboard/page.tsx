@@ -100,6 +100,12 @@ export default function TeacherDashboard() {
             </div>
           ) : <span style={{ fontSize: '0.78rem' }}>-</span>}
         </div>
+        {s.bulgogi && (
+          <div style={{ background: 'var(--background)', padding: '6px 8px', borderRadius: '6px', gridColumn: '1 / -1' }}>
+            <span style={{ color: 'var(--text-muted)', display: 'block', fontSize: '0.7rem', marginBottom: '2px' }}>🥩 강경불고기</span>
+            <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#b45309' }}>{s.bulgogi}</span>
+          </div>
+        )}
       </div>
       {s.note && (
         <div style={{ marginTop: '8px', padding: '8px', background: 'rgba(245,158,11,0.1)', borderRadius: '6px', fontSize: '0.82rem', color: 'var(--accent)', display: 'flex', gap: '6px' }}>
