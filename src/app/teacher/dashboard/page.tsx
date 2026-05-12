@@ -287,12 +287,15 @@ export default function TeacherDashboard() {
                         )}
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', marginBottom: '8px' }}>
                           {row.map(room => {
-                            const count = students.filter(s => selectedDay === 1 ? s.room1 === room : s.room2 === room).length;
+                            const roomStu = students.filter(s => selectedDay === 1 ? s.room1 === room : s.room2 === room);
+                            const count = roomStu.length;
                             const isSelected = selectedRoom === room;
-                            const hasLeader = students.some(s => selectedDay === 1 ? (s.room1 === room && s.room1Leader) : (s.room2 === room && s.room2Leader));
+                            const hasLeader = roomStu.some(s => selectedDay === 1 ? s.room1Leader : s.room2Leader);
+                            // Extract unique class numbers from student IDs (3rd character = class)
+                            const classNums = [...new Set(roomStu.map(s => s.id.length >= 3 ? s.id.charAt(2) : '').filter(Boolean))].sort();
                             return (
                               <button key={room} onClick={() => setSelectedRoom(isSelected ? '' : room)} style={{
-                                padding: '10px 6px', borderRadius: '10px', textAlign: 'center',
+                                padding: '10px 6px 8px', borderRadius: '10px', textAlign: 'center',
                                 background: isSelected ? accent : 'var(--card-bg)',
                                 color: isSelected ? 'white' : 'var(--foreground)',
                                 border: `1px solid ${isSelected ? accent : 'var(--border-color)'}`,
@@ -300,6 +303,19 @@ export default function TeacherDashboard() {
                               }}>
                                 <div style={{ fontSize: '0.85rem', fontWeight: 700 }}>{room.replace(/^\d+층\s*/, '')}</div>
                                 <div style={{ fontSize: '0.65rem', opacity: 0.7, marginTop: '2px' }}>{count}명</div>
+                                {classNums.length > 0 && (
+                                  <div style={{ display: 'flex', gap: '3px', justifyContent: 'center', marginTop: '4px', flexWrap: 'wrap' }}>
+                                    {classNums.map(cn => (
+                                      <span key={cn} style={{
+                                        fontSize: '0.58rem', fontWeight: 700,
+                                        background: isSelected ? 'rgba(255,255,255,0.25)' : 'rgba(79,70,229,0.1)',
+                                        color: isSelected ? 'white' : 'var(--primary)',
+                                        padding: '1px 5px', borderRadius: '6px',
+                                        lineHeight: '1.4',
+                                      }}>{cn}반</span>
+                                    ))}
+                                  </div>
+                                )}
                                 {hasLeader && <span style={{ position: 'absolute', top: '3px', right: '5px', fontSize: '0.6rem', color: isSelected ? 'white' : 'var(--accent)' }}>★</span>}
                               </button>
                             );

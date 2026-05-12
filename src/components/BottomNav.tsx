@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Calendar, Phone, ShieldAlert, BookOpen } from 'lucide-react';
+import { Home, Calendar, Phone, ShieldAlert, BookOpen, Bus } from 'lucide-react';
 
 export default function BottomNav() {
   const pathname = usePathname();
@@ -23,6 +23,7 @@ export default function BottomNav() {
     { href: '/contacts', icon: Phone, label: '연락처', external: false },
     { href: '/emergency', icon: ShieldAlert, label: '비상연락', external: false },
     { href: '/manual', icon: BookOpen, label: '매뉴얼', external: false },
+    { href: '/seatmap', icon: Bus, label: '좌석표', external: false },
   ];
 
   return (
