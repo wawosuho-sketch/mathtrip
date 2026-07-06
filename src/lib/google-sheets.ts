@@ -63,6 +63,26 @@ export interface Announcement {
   message: string;
 }
 
+// ── Helper: 이미지 URL 정규화 ──
+// 구글드라이브 공유 링크를 <img> 로 바로 쓸 수 있는 직접 이미지 URL로 변환합니다.
+// 예) https://drive.google.com/file/d/FILE_ID/view?usp=sharing
+//   → https://drive.google.com/thumbnail?id=FILE_ID&sz=w1600
+// 그 외(일반 http 이미지 URL, /로 시작하는 로컬 경로)는 그대로 둡니다.
+export function toDirectImageUrl(raw: string): string {
+  const url = (raw || '').trim();
+  if (!url) return url;
+
+  // /file/d/FILE_ID/... , open?id=FILE_ID , uc?id=FILE_ID&... 형태에서 FILE_ID 추출
+  const m =
+    url.match(/drive\.google\.com\/file\/d\/([\w-]+)/) ||
+    url.match(/drive\.google\.com\/(?:open|uc)\?(?:[^#]*&)?id=([\w-]+)/) ||
+    url.match(/drive\.usercontent\.google\.com\/download\?(?:[^#]*&)?id=([\w-]+)/);
+  if (m) {
+    return `https://drive.google.com/thumbnail?id=${m[1]}&sz=w1600`;
+  }
+  return url;
+}
+
 // ── Helper: fetch and parse a public Google Sheet as CSV ──
 async function fetchSheet<T>(sheetName: string): Promise<T[]> {
   if (!SPREADSHEET_ID) {
@@ -125,7 +145,7 @@ export async function getSeatMaps(): Promise<Record<string, string>> {
   const map: Record<string, string> = {};
   raw.forEach(row => {
     const coach = (row['호차'] || '').trim();
-    const url = (row['이미지'] || row['좌석배치도'] || '').trim();
+    const url = toDirectImageUrl(row['이미지'] || row['좌석배치도'] || '');
     if (coach && url) map[coach] = url;
   });
   return map;
@@ -157,7 +177,7 @@ export async function getCourseInfo(): Promise<CourseInfo[]> {
   return raw.map(row => {
     const rawImages = (row['사진'] || '').trim();
     const images = rawImages
-      ? rawImages.split('\n').map((s: string) => s.trim()).filter(Boolean)
+      ? rawImages.split('\n').map((s: string) => toDirectImageUrl(s)).filter(Boolean)
       : [];
     return {
       name: (row['코스'] || '').trim(),
@@ -256,17 +276,23 @@ export async function getTeacherChecks(): Promise<TeacherCheck[]> {
 // ── TeacherRoom (교사 방배치) ──
 export interface TeacherRoom {
   name: string;
-  room1: string; // 소노문
-  room2: string; // 강동리조트
+  room1: string; // 1일차 숙소 방배치
+  room2: string; // 2일차 숙소 방배치
 }
 
 export async function getTeacherRooms(): Promise<TeacherRoom[]> {
   const raw = await fetchSheet<any>('ch room');
-  return raw.map(row => ({
-    name: (row['이름'] || '').trim(),
-    room1: (row['소노문'] || '').trim(),
-    room2: (row['강동리조트'] || '').trim(),
-  })).filter(tr => tr.name);
+  return raw.map(row => {
+    const keys = Object.keys(row);
+    // '1일차'/'2일차' 헤더를 우선 사용하고, 없으면 2·3번째 열을 사용
+    const room1 = row['1일차'] ?? row[keys[1]] ?? '';
+    const room2 = row['2일차'] ?? row[keys[2]] ?? '';
+    return {
+      name: (row['이름'] || row[keys[0]] || '').trim(),
+      room1: (room1 || '').trim(),
+      room2: (room2 || '').trim(),
+    };
+  }).filter(tr => tr.name);
 }
 
 // ── getExternal2 (운전기사) ──
@@ -315,13 +341,13 @@ export async function getExitMaps(): Promise<ExitMapData> {
   
   if (keys[0] && keys[0].includes('1일차')) {
     const d1Str = keys[1] || '';
-    day1 = d1Str.split('\n').map((s: string) => s.trim()).filter(Boolean);
+    day1 = d1Str.split('\n').map((s: string) => toDirectImageUrl(s)).filter(Boolean);
   }
 
   const rowVal1 = raw[0][keys[0]] || '';
   if (rowVal1.includes('2일차')) {
     const d2Str = raw[0][keys[1]] || '';
-    day2 = d2Str.split('\n').map((s: string) => s.trim()).filter(Boolean);
+    day2 = d2Str.split('\n').map((s: string) => toDirectImageUrl(s)).filter(Boolean);
   }
 
   return { day1, day2 };

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Search, Bus, BedDouble, LogOut, ShieldCheck, AlertCircle, ChevronDown, X, ClipboardCheck, Users, CarFront, Home, Map } from 'lucide-react';
 import { getStudents, getExternal, getExternal2, getSafeEdu, getTeacherChecks, getTeacherRooms, getExitMaps, getSeatMaps } from '@/lib/google-sheets';
 import type { Student, External, SafeEdu, TeacherCheck, TeacherRoom, ExitMapData } from '@/lib/google-sheets';
-import { withBasePath } from '@/site.config';
+import { withBasePath, lodgingName } from '@/site.config';
 
 export default function TeacherDashboard() {
   const router = useRouter();
@@ -218,8 +218,8 @@ export default function TeacherDashboard() {
         {activeTab === 'room' && (
           <div>
             <div style={{ display: 'flex', gap: '8px', marginBottom: '14px' }}>
-              <button onClick={() => { setSelectedDay(1); setSelectedRoom(''); }} style={{ flex: 1, padding: '10px', borderRadius: '8px', fontWeight: 600, background: selectedDay === 1 ? 'var(--primary)' : 'var(--card-bg)', color: selectedDay === 1 ? 'white' : 'var(--text-muted)', border: `1px solid ${selectedDay === 1 ? 'var(--primary)' : 'var(--border-color)'}`, fontSize: '0.9rem' }}>1일차 (소노문)</button>
-              <button onClick={() => { setSelectedDay(2); setSelectedRoom(''); }} style={{ flex: 1, padding: '10px', borderRadius: '8px', fontWeight: 600, background: selectedDay === 2 ? 'var(--secondary)' : 'var(--card-bg)', color: selectedDay === 2 ? 'white' : 'var(--text-muted)', border: `1px solid ${selectedDay === 2 ? 'var(--secondary)' : 'var(--border-color)'}`, fontSize: '0.9rem' }}>2일차 (강동)</button>
+              <button onClick={() => { setSelectedDay(1); setSelectedRoom(''); }} style={{ flex: 1, padding: '10px', borderRadius: '8px', fontWeight: 600, background: selectedDay === 1 ? 'var(--primary)' : 'var(--card-bg)', color: selectedDay === 1 ? 'white' : 'var(--text-muted)', border: `1px solid ${selectedDay === 1 ? 'var(--primary)' : 'var(--border-color)'}`, fontSize: '0.9rem' }}>{lodgingName(1) ? `1일차 (${lodgingName(1)})` : '1일차'}</button>
+              <button onClick={() => { setSelectedDay(2); setSelectedRoom(''); }} style={{ flex: 1, padding: '10px', borderRadius: '8px', fontWeight: 600, background: selectedDay === 2 ? 'var(--secondary)' : 'var(--card-bg)', color: selectedDay === 2 ? 'white' : 'var(--text-muted)', border: `1px solid ${selectedDay === 2 ? 'var(--secondary)' : 'var(--border-color)'}`, fontSize: '0.9rem' }}>{lodgingName(2) ? `2일차 (${lodgingName(2)})` : '2일차'}</button>
             </div>
 
             {(() => {
@@ -372,8 +372,8 @@ export default function TeacherDashboard() {
         {activeTab === 'teacherRoom' && (
           <div>
             <div style={{ display: 'flex', gap: '8px', marginBottom: '14px' }}>
-              <button onClick={() => setTeacherRoomDay(1)} style={{ flex: 1, padding: '10px', borderRadius: '8px', fontWeight: 600, background: teacherRoomDay === 1 ? 'var(--primary)' : 'var(--card-bg)', color: teacherRoomDay === 1 ? 'white' : 'var(--text-muted)', border: `1px solid ${teacherRoomDay === 1 ? 'var(--primary)' : 'var(--border-color)'}`, fontSize: '0.9rem' }}>소노문 (1일차)</button>
-              <button onClick={() => setTeacherRoomDay(2)} style={{ flex: 1, padding: '10px', borderRadius: '8px', fontWeight: 600, background: teacherRoomDay === 2 ? 'var(--secondary)' : 'var(--card-bg)', color: teacherRoomDay === 2 ? 'white' : 'var(--text-muted)', border: `1px solid ${teacherRoomDay === 2 ? 'var(--secondary)' : 'var(--border-color)'}`, fontSize: '0.9rem' }}>강동리조트 (2일차)</button>
+              <button onClick={() => setTeacherRoomDay(1)} style={{ flex: 1, padding: '10px', borderRadius: '8px', fontWeight: 600, background: teacherRoomDay === 1 ? 'var(--primary)' : 'var(--card-bg)', color: teacherRoomDay === 1 ? 'white' : 'var(--text-muted)', border: `1px solid ${teacherRoomDay === 1 ? 'var(--primary)' : 'var(--border-color)'}`, fontSize: '0.9rem' }}>{lodgingName(1) ? `${lodgingName(1)} (1일차)` : '1일차'}</button>
+              <button onClick={() => setTeacherRoomDay(2)} style={{ flex: 1, padding: '10px', borderRadius: '8px', fontWeight: 600, background: teacherRoomDay === 2 ? 'var(--secondary)' : 'var(--card-bg)', color: teacherRoomDay === 2 ? 'white' : 'var(--text-muted)', border: `1px solid ${teacherRoomDay === 2 ? 'var(--secondary)' : 'var(--border-color)'}`, fontSize: '0.9rem' }}>{lodgingName(2) ? `${lodgingName(2)} (2일차)` : '2일차'}</button>
             </div>
             {(() => {
               const accent = teacherRoomDay === 1 ? 'var(--primary)' : 'var(--secondary)';

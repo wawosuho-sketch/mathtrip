@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { ChevronDown, Bus, Flame, Ambulance, MapPinOff, ShieldAlert, Play, Map } from 'lucide-react';
 import { getExitMaps } from '@/lib/google-sheets';
 import type { ExitMapData } from '@/lib/google-sheets';
-import { withBasePath } from '@/site.config';
+import { withBasePath, lodgingName } from '@/site.config';
 
 interface ManualItem {
   subtitle: string;
@@ -286,7 +286,7 @@ export default function ManualPage() {
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <span>1일차 (소노문) 비상 대피도</span>
+                    <span>{lodgingName(1) ? `1일차 (${lodgingName(1)})` : '1일차'} 비상 대피도</span>
                   </div>
                   <ChevronDown size={20} style={{ transform: openExitDay === 1 ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s ease' }} />
                 </button>
@@ -314,7 +314,7 @@ export default function ManualPage() {
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <span>2일차 (강동리조트) 비상 대피도</span>
+                    <span>{lodgingName(2) ? `2일차 (${lodgingName(2)})` : '2일차'} 비상 대피도</span>
                   </div>
                   <ChevronDown size={20} style={{ transform: openExitDay === 2 ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s ease' }} />
                 </button>

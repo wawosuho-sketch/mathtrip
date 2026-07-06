@@ -27,6 +27,14 @@ export const siteConfig = {
   // ── 테마 색상 (앱 상단바 / PWA 색상) ──
   themeColor: '#4f46e5',
 
+  // ── 숙소 이름 (선택) ──
+  // 1일차/2일차 숙소 이름. 비워두면 화면에 "1일차"/"2일차"로만 표시됩니다.
+  // 예: { day1: '△△리조트', day2: '○○호텔' }
+  lodging: {
+    day1: '',
+    day2: '',
+  },
+
   // ── 여행 일자 설정 ──
   // schedule 시트의 '일자' 컬럼 값(key)과 매핑됩니다.
   tripDays: [
@@ -63,4 +71,9 @@ export function withBasePath(path: string): string {
 /** 일자 key로 해당 일자 설정을 찾습니다. */
 export function getTripDay(key: string): TripDay | undefined {
   return siteConfig.tripDays.find((d) => d.key === key);
+}
+
+/** 해당 일자의 숙소 이름 (설정되지 않았으면 빈 문자열) */
+export function lodgingName(day: 1 | 2): string {
+  return (day === 1 ? siteConfig.lodging.day1 : siteConfig.lodging.day2) || '';
 }
