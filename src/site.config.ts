@@ -27,6 +27,12 @@ export const siteConfig = {
   // ── 테마 색상 (앱 상단바 / PWA 색상) ──
   themeColor: '#4f46e5',
 
+  // ── 교사용(관리자) 로그인 비밀번호 ──
+  // 학생에게 노출되지 않도록 코드에 직접 적지 말고, 배포 환경변수
+  // NEXT_PUBLIC_TEACHER_PASSWORD 에 설정하세요. (Vercel: Settings → Environment Variables)
+  // 아래 '0000'은 미설정 시 기본값입니다. 반드시 변경하세요.
+  teacherPassword: process.env.NEXT_PUBLIC_TEACHER_PASSWORD || '0000',
+
   // ── 숙소 이름 (선택) ──
   // 1일차/2일차 숙소 이름. 비워두면 화면에 "1일차"/"2일차"로만 표시됩니다.
   // 예: { day1: '△△리조트', day2: '○○호텔' }

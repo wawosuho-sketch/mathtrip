@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Lock, ArrowRight, ArrowLeft } from 'lucide-react';
+import { siteConfig } from '@/site.config';
 
 export default function TeacherLogin() {
   const router = useRouter();
@@ -11,8 +12,8 @@ export default function TeacherLogin() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // Updated password to "0815"
-    if (password === '0815') {
+    // 비밀번호는 src/site.config.ts 의 teacherPassword 에서 설정합니다.
+    if (password === siteConfig.teacherPassword) {
       localStorage.setItem('teacherAuth', 'true');
       router.push('/teacher/dashboard');
     } else {
