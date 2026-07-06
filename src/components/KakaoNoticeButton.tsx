@@ -1,24 +1,16 @@
 "use client";
 
 import { MessageCircle } from 'lucide-react';
-
-const COACH_KAKAO_URLS: Record<string, string> = {
-  '1호차': 'https://open.kakao.com/o/gos8dfsi',
-  '2호차': 'https://open.kakao.com/o/g3AAefsi',
-  '3호차': 'https://open.kakao.com/o/gFcWefsi',
-  '4호차': 'https://open.kakao.com/o/giwhffsi',
-  '5호차': 'https://open.kakao.com/o/giQzffsi',
-  '6호차': 'https://open.kakao.com/o/geDOffsi',
-};
+import { siteConfig } from '@/site.config';
 
 interface KakaoNoticeButtonProps {
   coach?: string; // optional: if provided, links to coach-specific chat
 }
 
 export default function KakaoNoticeButton({ coach }: KakaoNoticeButtonProps) {
-  // Use coach-specific URL if available, otherwise fall back to env variable
-  const kakaoUrl = (coach && COACH_KAKAO_URLS[coach]) 
-    || process.env.NEXT_PUBLIC_KAKAOTALK_URL 
+  // Use coach-specific URL if available, otherwise fall back to the default URL
+  const kakaoUrl = (coach && siteConfig.coachKakaoUrls[coach])
+    || siteConfig.defaultKakaoUrl
     || '#';
 
   if (!kakaoUrl || kakaoUrl === '#') {

@@ -5,12 +5,12 @@ import KakaoNoticeButton from '@/components/KakaoNoticeButton';
 import { Clock, MapPin, TriangleAlert, ChevronDown, ChevronRight, Bus, Image as ImageIcon } from 'lucide-react';
 import { getScheduleEntries, getCourseInfo } from '@/lib/google-sheets';
 import type { ScheduleEntry, CourseInfo } from '@/lib/google-sheets';
+import { siteConfig, getTripDay, withBasePath } from '@/site.config';
 
-const DAY_LABELS: Record<string, { label: string; date: string; color: string }> = {
-  '1': { label: '1일차', date: '5월 13일 (수)', color: '#4f46e5' },
-  '2': { label: '2일차', date: '5월 14일 (목)', color: '#ec4899' },
-  '3': { label: '3일차', date: '5월 15일 (금)', color: '#f59e0b' },
-};
+const DAY_LABELS: Record<string, { label: string; date: string; color: string }> =
+  Object.fromEntries(
+    siteConfig.tripDays.map((d) => [d.key, { label: d.label, date: d.date, color: d.color }])
+  );
 
 export default function SchedulePage() {
   const [schedules, setSchedules] = useState<ScheduleEntry[]>([]);
@@ -38,13 +38,12 @@ export default function SchedulePage() {
         if (scheduleData.length > 0) setSchedules(scheduleData);
         if (courseData.length > 0) setCourses(courseData);
 
-        // Auto-open today's day
+        // Auto-open today's day (config의 isoDate와 매칭)
         const kst = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
         const ymd = `${kst.getFullYear()}-${String(kst.getMonth() + 1).padStart(2, '0')}-${String(kst.getDate()).padStart(2, '0')}`;
-        if (ymd === '2026-05-13') setOpenDays(new Set(['1']));
-        else if (ymd === '2026-05-14') setOpenDays(new Set(['2']));
-        else if (ymd === '2026-05-15') setOpenDays(new Set(['3']));
-        else setOpenDays(new Set(['1']));
+        const today = siteConfig.tripDays.find((d) => d.isoDate === ymd);
+        const firstKey = siteConfig.tripDays[0]?.key ?? '1';
+        setOpenDays(new Set([today?.key ?? firstKey]));
       } catch (err) {
         console.error('Failed to fetch schedule');
       } finally {
@@ -84,10 +83,8 @@ export default function SchedulePage() {
 
   const isCurrentSchedule = (day: string, timeStr: string) => {
     if (!kstNow) return false;
-    let targetDate = '';
-    if (day === '1') targetDate = '2026-05-13';
-    else if (day === '2') targetDate = '2026-05-14';
-    else if (day === '3') targetDate = '2026-05-15';
+    const targetDate = getTripDay(day)?.isoDate || '';
+    if (!targetDate) return false;
 
     const currentYMD = `${kstNow.getFullYear()}-${String(kstNow.getMonth() + 1).padStart(2, '0')}-${String(kstNow.getDate()).padStart(2, '0')}`;
     if (currentYMD !== targetDate) return false;
@@ -269,7 +266,7 @@ export default function SchedulePage() {
                                       flexShrink: 0, position: 'relative', background: 'var(--background)',
                                     }}>
                                       <img
-                                        src={img.startsWith('/') ? `/mathtrip${img}` : img}
+                                        src={withBasePath(img)}
                                         alt={`${course.name} ${imgIdx + 1}`}
                                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                         onError={(e) => {

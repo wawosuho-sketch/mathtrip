@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Bus } from 'lucide-react';
 import { getStudents } from '@/lib/google-sheets';
 import type { Student } from '@/lib/google-sheets';
+import { withBasePath } from '@/site.config';
 
 export default function SeatmapPage() {
   const router = useRouter();
@@ -53,8 +54,7 @@ export default function SeatmapPage() {
 
   // Extract coach number (e.g., "6호차" → "06")
   const coachNum = student.coach.replace(/[^0-9]/g, '').padStart(2, '0');
-  const basePath = '/mathtrip';
-  const imgSrc = `${basePath}/bus/${coachNum}.jpg`;
+  const imgSrc = withBasePath(`/bus/${coachNum}.jpg`);
 
   return (
     <div className="screen-container">

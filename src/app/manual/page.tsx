@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { ChevronDown, Bus, Flame, Ambulance, MapPinOff, ShieldAlert, Play, Map } from 'lucide-react';
 import { getExitMaps } from '@/lib/google-sheets';
 import type { ExitMapData } from '@/lib/google-sheets';
+import { withBasePath } from '@/site.config';
 
 interface ManualItem {
   subtitle: string;
@@ -292,7 +293,7 @@ export default function ManualPage() {
                 {openExitDay === 1 && (
                   <div style={{ padding: '12px', display: 'flex', flexDirection: 'column', gap: '10px', background: 'var(--background)' }}>
                     {exitMaps.day1.map((imgUrl, idx) => (
-                      <img key={idx} src={imgUrl.startsWith('/') ? `/mathtrip${imgUrl}` : imgUrl} alt={`1일차 대피도 ${idx + 1}`} style={{ width: '100%', borderRadius: '8px', boxShadow: 'var(--shadow-sm)' }} />
+                      <img key={idx} src={withBasePath(imgUrl)} alt={`1일차 대피도 ${idx + 1}`} style={{ width: '100%', borderRadius: '8px', boxShadow: 'var(--shadow-sm)' }} />
                     ))}
                   </div>
                 )}
@@ -320,7 +321,7 @@ export default function ManualPage() {
                 {openExitDay === 2 && (
                   <div style={{ padding: '12px', display: 'flex', flexDirection: 'column', gap: '10px', background: 'var(--background)' }}>
                     {exitMaps.day2.map((imgUrl, idx) => (
-                      <img key={idx} src={imgUrl.startsWith('/') ? `/mathtrip${imgUrl}` : imgUrl} alt={`2일차 대피도 ${idx + 1}`} style={{ width: '100%', borderRadius: '8px', boxShadow: 'var(--shadow-sm)' }} />
+                      <img key={idx} src={withBasePath(imgUrl)} alt={`2일차 대피도 ${idx + 1}`} style={{ width: '100%', borderRadius: '8px', boxShadow: 'var(--shadow-sm)' }} />
                     ))}
                   </div>
                 )}

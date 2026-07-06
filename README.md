@@ -1,36 +1,220 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 수학여행 안전관리 웹앱 📱
 
-## Getting Started
+> **개발 지식이 전혀 없어도 괜찮습니다.**
+> 구글시트에 명단만 채우고, 안내대로 클릭 몇 번만 하면 우리 학교 수학여행 앱이 만들어집니다.
+> 서버 구입도, 프로그램 설치도, 비용도 필요 없습니다.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 이 앱으로 무엇을 할 수 있나요?
+
+학생은 스마트폰으로 QR을 찍으면(또는 링크 접속) **학번과 이름만 입력**하고 바로 자기 정보를 볼 수 있습니다.
+
+- 🚌 내 호차 · 버스 차량번호 · 좌석 배치도
+- 🏨 1일차 / 2일차 숙소(방)와 방장 여부
+- 🍽️ 우리 식사팀 멤버
+- 🗺️ 우리 호차 일정표 (코스 사진 · 주의사항)
+- 🆘 **안전관리**: 비상 대피도, 안전교육 안내 영상(유튜브 쇼츠), 긴급 연락처
+- 💬 우리 호차 카카오톡 공지방 바로가기
+
+선생님은 별도 화면(교사용)에서 학생 검색, 안전 점검사항, 연락처를 관리합니다.
+
+> 💡 **핵심**: 학생 명단·일정·연락처 같은 실제 내용은 **구글시트에서** 관리합니다.
+> 시트만 고치면 앱 화면이 바로 바뀌므로, 프로그램을 만질 필요가 없습니다.
+
+---
+
+## 🚀 우리 학교에 도입하기 (딱 3단계)
+
+> 준비물: 구글 계정, 깃허브(GitHub) 계정 무료 가입, 스마트폰. 소요 시간 약 30분.
+
+### 1단계. 구글시트에 우리 학교 정보 채우기 ✍️
+
+1. 구글시트를 새로 만들고, [아래 시트 구조](#-구글시트-작성-방법)대로 **탭(시트 이름)과 첫 줄 제목**을 만듭니다.
+2. 학생 명단·일정 등을 입력합니다.
+3. 오른쪽 위 **`공유`** → **"링크가 있는 모든 사용자"** 를 선택하고 권한을 **"뷰어"** 로 둡니다.
+4. 주소창의 시트 ID를 복사해 둡니다.
+   `docs.google.com/spreadsheets/d/` **`👉이 부분이 시트 ID👈`** `/edit`
+
+> 이 단계가 사실상 전부입니다. 나머지는 클릭만 하면 됩니다.
+
+### 2단계. 코드 복사하기 (버튼 클릭) 📋
+
+- 이 페이지(깃허브 저장소) 위쪽의 초록색 **`Use this template`** 버튼을 누르면
+  내 계정으로 똑같은 복사본이 만들어집니다. (코드를 볼 필요도, 수정할 필요도 없습니다.)
+
+### 3단계. 인터넷에 올리기 (Vercel, 무료) 🌐
+
+**Vercel**은 만든 앱을 무료로 인터넷에 올려주는 서비스입니다. 아래 버튼으로 시작하세요.
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/wawosuho-sketch/mathtrip&env=NEXT_PUBLIC_SPREADSHEET_ID&envDescription=%EA%B5%AC%EA%B8%80%EC%8B%9C%ED%8A%B8%20ID%EB%A5%BC%20%EC%9E%85%EB%A0%A5%ED%95%98%EC%84%B8%EC%9A%94)
+
+1. 버튼을 누르고 깃허브 계정으로 로그인합니다.
+2. **환경변수(Environment Variable)** 입력칸이 나오면:
+   - 이름(Name): `NEXT_PUBLIC_SPREADSHEET_ID`
+   - 값(Value): **1단계에서 복사한 시트 ID**
+3. **Deploy** 버튼 클릭 → 잠시 기다리면 `https://우리학교이름.vercel.app` 같은 주소가 생깁니다. **완성!** 🎉
+
+> 이 주소를 QR코드로 만들어 학생들에게 나눠주면 됩니다. ([QR 만드는 법](#-qr코드-만들고-배포하기))
+
+---
+
+## 📱 QR코드 만들고 배포하기
+
+QR코드는 어렵지 않습니다. **QR = 인터넷 주소를 사진으로 바꾼 것**일 뿐입니다.
+스마트폰 카메라로 찍으면 그 주소가 자동으로 열립니다.
+
+### 만들 QR은 보통 2개입니다
+| QR | 담는 주소 | 용도 |
+|---|---|---|
+| **학생 접속용** | 3단계에서 만든 `https://...vercel.app` | 학생이 찍으면 앱이 열림 (가정통신문·현수막·안내판) |
+| **코드 나눔용**(공모전) | 이 깃허브 저장소 주소 | 다른 학교·심사위원이 찍으면 코드를 가져갈 수 있음 |
+
+### 만드는 방법 (무료, 30초)
+1. `네이버 QR코드`, `qr-code-generator.com`, 또는 크롬 주소창 오른쪽 QR 버튼 등 아무거나 사용합니다.
+2. 위 주소를 붙여넣습니다.
+3. 이미지(PNG)를 내려받아 문서·포스터에 넣습니다.
+
+### 공모전/현장 배포 팁 ✅
+- **인쇄 전에 반드시 직접 스마트폰으로 찍어 확인**하세요. (주소 오타 방지)
+- QR 아래에 **"수학여행 앱 · 카메라로 찍으세요"** 같은 안내 문구를 함께 넣으세요.
+- 너무 작게 인쇄하면 인식이 안 됩니다. 명함용은 최소 2cm, 포스터용은 5cm 이상 권장.
+- 배경색과 대비가 뚜렷하게(흰 바탕에 검정 QR) 하세요.
+- 주소가 바뀌면 QR도 다시 만들어야 합니다. **인쇄물은 주소를 확정한 뒤**에 제작하세요.
+- (선택) `우리학교.vercel.app` 대신 기억하기 쉬운 주소를 원하면 Vercel에서 무료로 이름을 바꾸거나, 학교 도메인을 연결할 수 있습니다.
+
+> 실제 배포 주소가 정해지면, 원하시면 그 주소로 된 QR 이미지를 만들어 드릴 수 있습니다.
+
+---
+
+## 🎨 학교 이름·색상·날짜 바꾸기
+
+학교마다 다른 부분(이름, 여행 날짜, 대표 색상, 호차 카톡방 주소)은
+**`src/site.config.ts`** 파일 하나에 모여 있습니다. 깃허브 화면에서 연필(✏️) 아이콘을 눌러 바로 수정하고 저장하면, Vercel이 자동으로 반영합니다.
+
+```ts
+export const siteConfig = {
+  schoolName: '○○고등학교',      // ← 우리 학교 이름
+  appTitle: '수학여행 안내',      // ← 앱 제목
+  themeColor: '#4f46e5',         // ← 대표 색상
+
+  tripDays: [                    // ← 여행 날짜
+    { key: '1', label: '1일차', date: '5월 13일 (수)', color: '#4f46e5', isoDate: '2026-05-13' },
+    { key: '2', label: '2일차', date: '5월 14일 (목)', color: '#ec4899', isoDate: '2026-05-14' },
+  ],
+
+  coachKakaoUrls: {              // ← 호차별 카카오톡 오픈채팅 주소
+    '1호차': 'https://open.kakao.com/o/xxxxxxxx',
+  },
+};
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+> 여기까지만 해도 앱은 완성입니다. 아래는 시트를 어떻게 채우는지에 대한 설명입니다.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📊 구글시트 작성 방법
 
-## Learn More
+시트 안에 아래 **탭(시트 이름)** 들을 만들고, 각 탭의 **첫 줄에 제목(헤더)** 을 똑같이 적으세요.
+필요 없는 탭이나 칸은 비워둬도 됩니다.
 
-To learn more about Next.js, take a look at the following resources:
+<details>
+<summary><b>👉 각 탭의 제목(헤더) 펼쳐보기</b></summary>
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### `students` — 학생 명단 (필수)
+`학번` · `이름` · `학생 연락처` · `학부모 긴급 연락처 1` · `학부모 긴급 연락처 2` · `학생 특이사항` · `식사팀` · `1일차 방번호` · `1일차 방장여부` · `2일차 방번호` · `2일차 방장 여부` · `호차` · `버스 차번호` · `강경불고기`
+- **방장여부**: 방장이면 `방장` 이라고 입력
+- **식사팀**: 같은 팀 이름을 쉼표/공백으로 나열
+- **호차**: `1호차`, `2호차` … 형식
+- **강경불고기**: 특정 여행 전용 칸(선택). 비워두면 화면에 안 나옵니다.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### `schedule` — 호차별 일정 (필수)
+`일자` · `시간` · `1호차` · `2호차` · `3호차` · `4호차` · `5호차` · `6호차`
+- **일자**: 위 설정의 `tripDays` 번호와 일치 (`1`, `2` …)
+- **시간**: `09:00 ~ 10:30` 형식이면 현재 진행 중인 일정이 자동 강조됩니다.
+- 각 호차 칸에 그 시간대의 **코스 이름**을 적습니다.
 
-## Deploy on Vercel
+### `course` — 코스 상세
+`코스` · `활동내용` · `주의사항` · `사진`
+- **코스**: `schedule`에 적은 코스 이름과 똑같이
+- **사진**: 인터넷 이미지 주소를 줄바꿈으로 여러 개 넣을 수 있습니다.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### `contacts` — 선생님 연락처
+`구분` · `이름` · `연락처` · `탑승 호차`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### `external` / `external2` — 유관기관 / 운전기사
+`구분` · `이름` · `연락처`
+
+### `emergency` — 긴급 연락처
+`기관` · `연락처`
+
+### `safeedu` — 안전교육
+`분야` · `세부항목` · `내용`
+
+### `teachercheck` — 교사 확인사항
+`코스` · `(인솔)확인사항` · `(지원)확인사항`
+
+### `ch room` — 교사 방배치
+`이름` · `소노문` · `강동리조트`
+- 숙소 이름 예시입니다. 우리 학교 숙소명으로 바꾸려면 `src/lib/google-sheets.ts` 의 `getTeacherRooms` 도 함께 수정하세요.
+
+### `exit` — 비상 대피도
+`1일차` / `2일차` 행에 대피도 이미지 주소를 줄바꿈으로 입력
+
+</details>
+
+---
+
+## ❓ 자주 묻는 질문 (선생님용)
+
+**Q. 정말 비용이 안 드나요?**
+네. 구글시트, 깃허브, Vercel 모두 이 정도 사용량은 무료입니다.
+
+**Q. 프로그래밍을 몰라도 되나요?**
+네. 가장 손이 많이 가는 일은 **구글시트에 명단을 채우는 것**뿐입니다. 나머지는 버튼 클릭입니다.
+
+**Q. 명단이 바뀌면 앱도 다시 만들어야 하나요?**
+아니요. **구글시트만 수정하면** 앱에 자동 반영됩니다. (학생은 새로고침하면 됩니다.)
+
+**Q. 매년 다시 쓸 수 있나요?**
+네. 시트 내용과 `site.config.ts`의 날짜만 바꾸면 매년 재사용할 수 있습니다.
+
+**Q. 개인정보는 안전한가요?**
+학생 명단·전화번호는 **구글시트에만** 저장되고, 코드에는 들어가지 않습니다. 다만 시트를 "링크가 있는 사용자 뷰어"로 공개하므로 **주소를 아는 사람은 볼 수 있습니다.** 민감정보는 신중히 다루고 학교 개인정보 지침을 따르세요. 필요하면 전화번호 등은 교사용 시트로 분리하세요.
+
+**Q. 학생 로그인은 안전한가요?**
+학번+이름 대조 방식이며 비밀번호는 없습니다. 편의 위주 설계이니, 더 강한 보안이 필요하면 접근 정책을 보완하세요.
+
+---
+
+## 🛠 (개발자용) 로컬 실행 · 배포 상세
+
+<details>
+<summary>펼쳐보기</summary>
+
+### 로컬 실행
+```bash
+npm install
+cp .env.example .env.local   # 시트 ID 입력
+npm run dev                  # http://localhost:3000/login
+npm run build                # out/ 에 정적 파일 생성
+```
+
+### 배포 옵션
+| 방식 | 난이도 | basePath |
+|---|---|---|
+| **Vercel** (권장) | ★☆☆ | 불필요 (`NEXT_PUBLIC_BASE_PATH` 비움) |
+| **GitHub Pages** | ★★☆ | `NEXT_PUBLIC_BASE_PATH="/저장소이름"` 필요 |
+
+### 환경변수
+- `NEXT_PUBLIC_SPREADSHEET_ID` (필수): 구글시트 ID
+- `NEXT_PUBLIC_KAKAOTALK_URL` (선택): 공통 카카오톡 공지방
+- `NEXT_PUBLIC_BASE_PATH` (선택): GitHub Pages 하위경로 배포 시
+
+### 기술 스택
+Next.js 16 (App Router, 정적 export) · React 19 · TypeScript · PapaParse · lucide-react
+
+</details>
+
+## 📄 라이선스
+자유롭게 가져다 쓰고 학교 상황에 맞게 수정하세요.

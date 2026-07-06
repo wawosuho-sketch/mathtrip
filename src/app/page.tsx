@@ -1,14 +1,11 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function SplashPage() {
   const router = useRouter();
-  const [mounted, setMounted] = useState(false);
-
   useEffect(() => {
-    setMounted(true);
     const timer = setTimeout(() => {
       // Check if logged in (Teacher first, then Student)
       const isTeacher = localStorage.getItem('teacherAuth') === 'true';
@@ -24,8 +21,6 @@ export default function SplashPage() {
     }, 2000);
     return () => clearTimeout(timer);
   }, [router]);
-
-  if (!mounted) return null;
 
   return (
     <div style={{

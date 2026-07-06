@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Search, Bus, BedDouble, LogOut, ShieldCheck, AlertCircle, ChevronDown, X, ClipboardCheck, Users, CarFront, Home, Map } from 'lucide-react';
 import { getStudents, getExternal, getExternal2, getSafeEdu, getTeacherChecks, getTeacherRooms, getExitMaps } from '@/lib/google-sheets';
 import type { Student, External, SafeEdu, TeacherCheck, TeacherRoom, ExitMapData } from '@/lib/google-sheets';
+import { withBasePath } from '@/site.config';
 
 export default function TeacherDashboard() {
   const router = useRouter();
@@ -174,14 +175,13 @@ export default function TeacherDashboard() {
             </select>
             {selectedBus && (() => {
               const busNum = selectedBus.replace(/[^0-9]/g, '').padStart(2, '0');
-              const basePath = '/mathtrip';
               return (
                 <div>
                   {/* Seating Chart */}
                   <div className="card" style={{ padding: '10px', marginBottom: '14px', textAlign: 'center' }}>
                     <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '8px', color: 'var(--primary)' }}>좌석배치도</h3>
                     <img
-                      src={`${basePath}/bus/${busNum}.jpg`}
+                      src={withBasePath(`/bus/${busNum}.jpg`)}
                       alt={`${selectedBus} 좌석배치도`}
                       style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--border-color)' }}
                     />
@@ -422,7 +422,7 @@ export default function TeacherDashboard() {
                       </div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                         {exitMaps.day1.map((imgUrl, idx) => (
-                          <img key={idx} src={imgUrl.startsWith('/') ? `/mathtrip${imgUrl}` : imgUrl} alt={`1일차 대피도 ${idx + 1}`} style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--border-color)', boxShadow: 'var(--shadow-sm)' }} />
+                          <img key={idx} src={withBasePath(imgUrl)} alt={`1일차 대피도 ${idx + 1}`} style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--border-color)', boxShadow: 'var(--shadow-sm)' }} />
                         ))}
                       </div>
                     </div>
@@ -436,7 +436,7 @@ export default function TeacherDashboard() {
                       </div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                         {exitMaps.day2.map((imgUrl, idx) => (
-                          <img key={idx} src={imgUrl.startsWith('/') ? `/mathtrip${imgUrl}` : imgUrl} alt={`2일차 대피도 ${idx + 1}`} style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--border-color)', boxShadow: 'var(--shadow-sm)' }} />
+                          <img key={idx} src={withBasePath(imgUrl)} alt={`2일차 대피도 ${idx + 1}`} style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--border-color)', boxShadow: 'var(--shadow-sm)' }} />
                         ))}
                       </div>
                     </div>
