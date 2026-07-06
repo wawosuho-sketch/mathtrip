@@ -7,7 +7,7 @@
 
 1. [sheets.new](https://sheets.new) 로 빈 구글시트를 새로 만듭니다.
 2. 아래 각 CSV 파일마다 **탭을 하나씩** 추가합니다. **탭 이름은 파일명과 똑같이** 하세요.
-   - 탭 이름 예: `students`, `schedule`, `course`, `contacts`, `external`, `external2`, `emergency`, `safeedu`, `teachercheck`, `ch room`, `exit`
+   - 탭 이름 예: `students`, `seatmap`, `schedule`, `course`, `contacts`, `external`, `external2`, `emergency`, `safeedu`, `teachercheck`, `ch room`, `exit`
 3. 각 탭을 선택한 상태에서 **파일 → 가져오기 → 업로드** 로 해당 CSV를 올립니다.
    - 가져오기 위치: **"현재 시트 바꾸기"**, 구분자: **쉼표** 선택
 4. 다 넣었으면 오른쪽 위 **공유 → "링크가 있는 모든 사용자" → 뷰어** 로 설정합니다.

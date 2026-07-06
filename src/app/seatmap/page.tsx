@@ -3,13 +3,13 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Bus } from 'lucide-react';
-import { getStudents } from '@/lib/google-sheets';
+import { getStudents, getSeatMaps } from '@/lib/google-sheets';
 import type { Student } from '@/lib/google-sheets';
-import { withBasePath } from '@/site.config';
 
 export default function SeatmapPage() {
   const router = useRouter();
   const [student, setStudent] = useState<Student | null>(null);
+  const [seatMaps, setSeatMaps] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [imgError, setImgError] = useState(false);
 
@@ -24,7 +24,8 @@ export default function SeatmapPage() {
 
     const fetchStudentData = async () => {
       try {
-        const students = await getStudents();
+        const [students, maps] = await Promise.all([getStudents(), getSeatMaps()]);
+        setSeatMaps(maps);
         if (students && students.length > 0) {
           const found = students.find(
             (s: Student) => s.id === studentId && s.name === studentName
@@ -52,9 +53,7 @@ export default function SeatmapPage() {
 
   if (!student) return null;
 
-  // Extract coach number (e.g., "6호차" → "06")
-  const coachNum = student.coach.replace(/[^0-9]/g, '').padStart(2, '0');
-  const imgSrc = withBasePath(`/bus/${coachNum}.jpg`);
+  const imgSrc = seatMaps[student.coach] || '';
 
   return (
     <div className="screen-container">
@@ -94,7 +93,7 @@ export default function SeatmapPage() {
         textAlign: 'center',
         overflow: 'hidden',
       }}>
-        {!imgError ? (
+        {imgSrc && !imgError ? (
           <img
             src={imgSrc}
             alt={`${student.coach} 좌석배치도`}
@@ -113,7 +112,7 @@ export default function SeatmapPage() {
             color: 'var(--text-muted)',
             fontSize: '0.9rem',
           }}>
-            좌석배치도를 불러올 수 없습니다.
+            좌석배치도가 아직 등록되지 않았습니다.
           </div>
         )}
       </div>

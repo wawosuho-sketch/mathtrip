@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Search, Bus, BedDouble, LogOut, ShieldCheck, AlertCircle, ChevronDown, X, ClipboardCheck, Users, CarFront, Home, Map } from 'lucide-react';
-import { getStudents, getExternal, getExternal2, getSafeEdu, getTeacherChecks, getTeacherRooms, getExitMaps } from '@/lib/google-sheets';
+import { getStudents, getExternal, getExternal2, getSafeEdu, getTeacherChecks, getTeacherRooms, getExitMaps, getSeatMaps } from '@/lib/google-sheets';
 import type { Student, External, SafeEdu, TeacherCheck, TeacherRoom, ExitMapData } from '@/lib/google-sheets';
 import { withBasePath } from '@/site.config';
 
@@ -16,6 +16,7 @@ export default function TeacherDashboard() {
   const [teacherChecks, setTeacherChecks] = useState<TeacherCheck[]>([]);
   const [teacherRooms, setTeacherRooms] = useState<TeacherRoom[]>([]);
   const [exitMaps, setExitMaps] = useState<ExitMapData>({ day1: [], day2: [] });
+  const [seatMaps, setSeatMaps] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'search' | 'bus' | 'room' | 'teacherRoom' | 'external' | 'external2' | 'check' | 'safety'>('search');
   const [searchQuery, setSearchQuery] = useState('');
@@ -31,8 +32,8 @@ export default function TeacherDashboard() {
     if (localStorage.getItem('teacherAuth') !== 'true') { router.push('/teacher/login'); return; }
     const fetchData = async () => {
       try {
-        const [s, e, e2, se, tc, tr, em] = await Promise.all([
-          getStudents(), getExternal(), getExternal2(), getSafeEdu(), getTeacherChecks(), getTeacherRooms(), getExitMaps()
+        const [s, e, e2, se, tc, tr, em, sm] = await Promise.all([
+          getStudents(), getExternal(), getExternal2(), getSafeEdu(), getTeacherChecks(), getTeacherRooms(), getExitMaps(), getSeatMaps()
         ]);
         if (s.length > 0) setStudents(s);
         if (e.length > 0) setExternals(e);
@@ -41,6 +42,7 @@ export default function TeacherDashboard() {
         if (tc.length > 0) setTeacherChecks(tc);
         if (tr.length > 0) setTeacherRooms(tr);
         setExitMaps(em);
+        setSeatMaps(sm);
       } catch { console.error('Failed to fetch'); }
       finally { setLoading(false); }
     };
@@ -101,12 +103,6 @@ export default function TeacherDashboard() {
             </div>
           ) : <span style={{ fontSize: '0.78rem' }}>-</span>}
         </div>
-        {s.bulgogi && (
-          <div style={{ background: 'var(--background)', padding: '6px 8px', borderRadius: '6px', gridColumn: '1 / -1' }}>
-            <span style={{ color: 'var(--text-muted)', display: 'block', fontSize: '0.7rem', marginBottom: '2px' }}>🥩 강경불고기</span>
-            <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#b45309' }}>{s.bulgogi}</span>
-          </div>
-        )}
       </div>
       {s.note && (
         <div style={{ marginTop: '8px', padding: '8px', background: 'rgba(245,158,11,0.1)', borderRadius: '6px', fontSize: '0.82rem', color: 'var(--accent)', display: 'flex', gap: '6px' }}>
@@ -174,17 +170,23 @@ export default function TeacherDashboard() {
               {coaches.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
             {selectedBus && (() => {
-              const busNum = selectedBus.replace(/[^0-9]/g, '').padStart(2, '0');
+              const seatImg = seatMaps[selectedBus] || '';
               return (
                 <div>
                   {/* Seating Chart */}
                   <div className="card" style={{ padding: '10px', marginBottom: '14px', textAlign: 'center' }}>
                     <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '8px', color: 'var(--primary)' }}>좌석배치도</h3>
-                    <img
-                      src={withBasePath(`/bus/${busNum}.jpg`)}
-                      alt={`${selectedBus} 좌석배치도`}
-                      style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--border-color)' }}
-                    />
+                    {seatImg ? (
+                      <img
+                        src={seatImg}
+                        alt={`${selectedBus} 좌석배치도`}
+                        style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--border-color)' }}
+                      />
+                    ) : (
+                      <div style={{ padding: '24px', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                        좌석배치도가 아직 등록되지 않았습니다.
+                      </div>
+                    )}
                   </div>
 
                   {/* Roster */}

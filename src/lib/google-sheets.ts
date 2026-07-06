@@ -17,7 +17,6 @@ export interface Student {
   room2Leader: boolean; // 2일차 방장 여부
   coach: string;        // 호차 (1호차, 2호차...)
   bus: string;          // 버스 차번호
-  bulgogi: string;      // 강경불고기 배정 (룸/테이블)
 }
 
 // ── Schedule (호차별 일정표) ──
@@ -116,8 +115,20 @@ export async function getStudents(): Promise<Student[]> {
     room2Leader: (row['2일차 방장 여부'] || row['2일차 방장여부'] || '').trim() === '방장',
     coach: (row['호차'] || '').trim(),
     bus: (row['버스 차번호'] || '').trim(),
-    bulgogi: (row['강경불고기'] || '').trim(),
   })).filter(s => s.id && s.name);
+}
+
+// ── getSeatMaps (호차별 좌석배치도 이미지 URL) ──
+// 'seatmap' 시트: 호차 | 이미지  (이미지 열에는 좌석배치도 이미지 URL)
+export async function getSeatMaps(): Promise<Record<string, string>> {
+  const raw = await fetchSheet<any>('seatmap');
+  const map: Record<string, string> = {};
+  raw.forEach(row => {
+    const coach = (row['호차'] || '').trim();
+    const url = (row['이미지'] || row['좌석배치도'] || '').trim();
+    if (coach && url) map[coach] = url;
+  });
+  return map;
 }
 
 // ── getScheduleEntries (호차별 일정) ──

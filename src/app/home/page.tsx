@@ -184,20 +184,6 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* Bulgogi Table Card */}
-        {student.bulgogi && (
-          <div className="card" style={{ borderLeft: '4px solid #b45309' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-              <div style={{ background: 'rgba(180, 83, 9, 0.1)', padding: '12px', borderRadius: '12px', color: '#b45309', flexShrink: 0, fontSize: '1.4rem' }}>
-                🥩
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600, marginBottom: '2px' }}>강경불고기 배정</p>
-                <p style={{ fontSize: '1.1rem', fontWeight: 700, color: '#b45309' }}>{student.bulgogi}</p>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
 
       <div style={{ marginTop: '40px', textAlign: 'center' }}>
